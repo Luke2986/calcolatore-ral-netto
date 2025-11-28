@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -13,18 +14,40 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
   const max = 100000;
   const step = 500;
 
+  const formatInputValue = (val: number): string => {
+    return new Intl.NumberFormat("it-IT").format(val);
+  };
+
+  const [inputValue, setInputValue] = useState(formatInputValue(value));
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Sync when external value changes (e.g., from slider)
+  useEffect(() => {
+    if (!isFocused) {
+      setInputValue(formatInputValue(value));
+    }
+  }, [value, isFocused]);
+
   const handleSliderChange = (values: number[]) => {
     onChange(values[0]);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9]/g, "");
-    const numValue = parseInt(rawValue) || 0;
-    onChange(Math.min(Math.max(numValue, min), max));
+    setInputValue(rawValue);
   };
 
-  const formatInputValue = (val: number): string => {
-    return new Intl.NumberFormat("it-IT").format(val);
+  const handleBlur = () => {
+    setIsFocused(false);
+    const numValue = parseInt(inputValue.replace(/[^0-9]/g, "")) || min;
+    const clampedValue = Math.min(Math.max(numValue, min), max);
+    onChange(clampedValue);
+    setInputValue(formatInputValue(clampedValue));
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    setInputValue(value.toString());
   };
 
   return (
@@ -40,8 +63,10 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
           <Input
             id="ral-input"
             type="text"
-            value={formatInputValue(value)}
+            value={isFocused ? inputValue : formatInputValue(value)}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
             className="text-2xl font-bold h-14 pl-10 pr-4 bg-card shadow-soft"
             placeholder="Es: 35.000 (sognare è gratis)"
           />
