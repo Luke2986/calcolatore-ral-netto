@@ -4,12 +4,15 @@ import { CitySelector } from "@/components/CitySelector";
 import { ResultCard } from "@/components/ResultCard";
 import { BreakdownList } from "@/components/BreakdownList";
 import { CityComparison } from "@/components/CityComparison";
-
 const Index = () => {
-  const { ral, citta, risultati, setRal, setCitta } = useCalcolatore();
-
-  return (
-    <div className="min-h-screen bg-gradient-subtle">
+  const {
+    ral,
+    citta,
+    risultati,
+    setRal,
+    setCitta
+  } = useCalcolatore();
+  return <div className="min-h-screen bg-gradient-subtle">
       {/* Header */}
       <header className="bg-card shadow-soft border-b border-border">
         <div className="container mx-auto px-4 py-8">
@@ -38,12 +41,7 @@ const Index = () => {
           </div>
 
           {/* Results Section */}
-          <ResultCard
-            nettoAnnuale={risultati.nettoAnnuale}
-            nettoMensile={risultati.nettoMensile}
-            aliquotaEffettiva={risultati.aliquotaEffettiva}
-            ral={ral}
-          />
+          <ResultCard nettoAnnuale={risultati.nettoAnnuale} nettoMensile={risultati.nettoMensile} aliquotaEffettiva={risultati.aliquotaEffettiva} ral={ral} />
 
           {/* Breakdown Section */}
           <BreakdownList trattenute={risultati} citta={citta} />
@@ -76,13 +74,11 @@ const Index = () => {
           <div className="text-center text-sm text-muted-foreground">
             <p>Realizzato con ❤️ per rendere le tasse meno noiose</p>
             <p className="mt-2">
-              Powered by <span className="font-semibold text-foreground">Jet HR</span>
+              Powered by <span className="font-semibold text-foreground">Luca Versilia </span>
             </p>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
