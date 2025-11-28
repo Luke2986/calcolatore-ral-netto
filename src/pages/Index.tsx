@@ -4,6 +4,7 @@ import { CitySelector } from "@/components/CitySelector";
 import { ResultCard } from "@/components/ResultCard";
 import { BreakdownList } from "@/components/BreakdownList";
 import { CityComparison } from "@/components/CityComparison";
+import { NegotiationSimulator } from "@/components/NegotiationSimulator";
 const Index = () => {
   const {
     ral,
@@ -45,6 +46,9 @@ const Index = () => {
 
           {/* Breakdown Section */}
           <BreakdownList trattenute={risultati} citta={citta} />
+
+          {/* Negotiation Simulator */}
+          <NegotiationSimulator currentRal={ral} citta={citta} />
 
           {/* City Comparison */}
           <CityComparison ral={ral} currentCity={citta} />
