@@ -47,6 +47,7 @@ export function NegotiationSimulator({ currentRal, citta }: NegotiationSimulator
               max={30000}
               step={500}
               className="w-full"
+              aria-label="Aumento RAL richiesto"
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-2">
               <span>+€1.000</span>
