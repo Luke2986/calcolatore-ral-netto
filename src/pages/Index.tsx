@@ -58,9 +58,9 @@ const Index = () => {
             <div className="flex items-start gap-3">
               <span className="text-2xl flex-shrink-0">⚠️</span>
               <div>
-                <h4 className="font-semibold text-warning-foreground mb-1">
+                <h2 className="font-semibold text-warning-foreground mb-1">
                   Disclaimer
-                </h4>
+                </h2>
                 <p className="text-sm text-muted-foreground">
                   Calcolatore semplificato basato su dipendente tempo indeterminato, 13 mensilità, 
                   anno completo, nessun familiare a carico. Per calcoli precisi e consulenza fiscale 
