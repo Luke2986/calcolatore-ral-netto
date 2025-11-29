@@ -78,6 +78,7 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
           max={max}
           step={step}
           className="w-full touch-none"
+          aria-label="Seleziona la RAL promessa"
         />
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>€{formatInputValue(min)}</span>
