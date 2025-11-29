@@ -14,7 +14,7 @@ export function CitySelector({ value, onChange, className }: CitySelectorProps) 
 
   return (
     <div className={className}>
-      <h3 className="text-base font-semibold mb-3">Seleziona la tua città</h3>
+      <h2 className="text-base font-semibold mb-3">Seleziona la tua città</h2>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {cities.map((cityCode) => {
           const city = CITIES[cityCode];
