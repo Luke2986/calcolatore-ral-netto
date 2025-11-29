@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatEuro, getAliquotaMessage, getEasterEgg } from "@/utils/calculations";
+import { formatEuro, getAliquotaMessage, getEasterEgg, calcolaMensilitaMultiple } from "@/utils/calculations";
 import { useEffect, useState } from "react";
 
 interface ResultCardProps {
@@ -14,6 +14,7 @@ export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral 
   const [show, setShow] = useState(false);
   const easterEgg = getEasterEgg(ral);
   const message = getAliquotaMessage(aliquotaEffettiva);
+  const mensilita = calcolaMensilitaMultiple(nettoAnnuale);
 
   useEffect(() => {
     setShow(false);
@@ -40,11 +41,27 @@ export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral 
           </div>
 
           <div className={cn("transition-all duration-500 delay-100", show ? "opacity-100" : "opacity-0")}>
-            <div className="text-sm font-medium mb-1 text-white/80">Per 13 mesi, perché la tredicesima esiste 📅</div>
-            <div className="text-3xl font-bold animate-counter">
-              {formatEuro(nettoMensile)}
+            <div className="text-sm font-medium mb-3 text-white/80">Al mese (dipende dal contratto) 📅</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all">
+                <div className="text-xs text-white/70 mb-1">12 mensilità</div>
+                <div className="text-xl font-bold">{formatEuro(mensilita.netto12)}</div>
+                <div className="text-xs text-white/70">/mese</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/30 hover:bg-white/15 transition-all relative">
+                <Badge variant="secondary" className="absolute -top-2 -right-2 bg-white/30 text-white border-white/40 text-xs">
+                  Più comune
+                </Badge>
+                <div className="text-xs text-white/70 mb-1">13 mensilità</div>
+                <div className="text-xl font-bold">{formatEuro(mensilita.netto13)}</div>
+                <div className="text-xs text-white/70">/mese</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all">
+                <div className="text-xs text-white/70 mb-1">14 mensilità</div>
+                <div className="text-xl font-bold">{formatEuro(mensilita.netto14)}</div>
+                <div className="text-xs text-white/70">/mese</div>
+              </div>
             </div>
-            <div className="text-sm text-white/80">al mese</div>
           </div>
 
           <div className={cn("pt-4 border-t border-white/20 transition-all duration-500 delay-200", show ? "opacity-100" : "opacity-0")}>

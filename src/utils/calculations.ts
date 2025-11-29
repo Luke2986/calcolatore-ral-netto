@@ -213,6 +213,22 @@ export function calcolaNettoCompleto(ral: number, citta: string): CalcoloResult 
 }
 
 /**
+ * Calcola il netto mensile per diverse mensilità (12, 13, 14)
+ * Dipende dal tipo di contratto
+ */
+export function calcolaMensilitaMultiple(nettoAnnuale: number): {
+  netto12: number;
+  netto13: number;
+  netto14: number;
+} {
+  return {
+    netto12: nettoAnnuale / 12,
+    netto13: nettoAnnuale / 13,
+    netto14: nettoAnnuale / 14,
+  };
+}
+
+/**
  * Formatta un numero in formato euro italiano
  */
 export function formatEuro(value: number): string {
