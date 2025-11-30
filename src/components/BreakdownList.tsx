@@ -17,44 +17,75 @@ export function BreakdownList({
   citta
 }: BreakdownListProps) {
   const city = CITIES[citta] || CITIES.milano;
-  const items: BreakdownItem[] = [{
-    icon: "💼",
-    label: "INPS",
-    description: "Per la pensione che forse vedremo",
-    amount: trattenute.contributiINPS,
-    percentage: trattenute.contributiINPS / trattenute.ralLorda * 100
-  }, {
-    icon: "🏛️",
-    label: "IRPEF Lorda",
-    description: "Prima dello sconto",
-    amount: trattenute.irpefLorda,
-    percentage: trattenute.irpefLorda / trattenute.ralLorda * 100
-  }, {
-    icon: "✨",
-    label: "Detrazioni",
-    description: trattenute.hasDetrazioneCuneo ? `Lavoro (${formatEuro(trattenute.detrazioniLavoro)}) + Cuneo 2025 (${formatEuro(trattenute.detrazioneCuneoFiscale || 0)})` : "Lo sconto che ti spetta",
-    amount: -(trattenute.detrazioniTotali || trattenute.detrazioniLavoro),
-    isPositive: true,
-    percentage: (trattenute.detrazioniTotali || trattenute.detrazioniLavoro) / trattenute.ralLorda * 100
-  }, {
-    icon: "🏛️",
-    label: "IRPEF Netta",
-    description: "Il pizzo di Stato (legale)",
-    amount: trattenute.irpefNetta,
-    percentage: trattenute.irpefNetta / trattenute.ralLorda * 100
-  }, {
-    icon: "🗺️",
-    label: "Addizionale Regionale",
-    description: `Il pedaggio per vivere in ${city.region}`,
-    amount: trattenute.addizionaleRegionale,
-    percentage: trattenute.addizionaleRegionale / trattenute.ralLorda * 100
-  }, {
-    icon: "🏘️",
-    label: "Addizionale Comunale",
-    description: "Il contributo per le buche nelle strade",
-    amount: trattenute.addizionaleComunale,
-    percentage: trattenute.addizionaleComunale / trattenute.ralLorda * 100
-  }];
+  const items: BreakdownItem[] = [
+    {
+      icon: "💼",
+      label: "INPS",
+      description: "Per la pensione che forse vedremo",
+      amount: trattenute.contributiINPS,
+      percentage: trattenute.contributiINPS / trattenute.ralLorda * 100
+    },
+    {
+      icon: "🏛️",
+      label: "IRPEF Lorda",
+      description: "Prima dello sconto",
+      amount: trattenute.irpefLorda,
+      percentage: trattenute.irpefLorda / trattenute.ralLorda * 100
+    },
+    {
+      icon: "✨",
+      label: "Detrazioni Lavoro",
+      description: "Lo sconto che ti spetta",
+      amount: -trattenute.detrazioniLavoro,
+      isPositive: true,
+      percentage: trattenute.detrazioniLavoro / trattenute.ralLorda * 100
+    },
+    ...(trattenute.detrazioneCuneoFiscale && trattenute.detrazioneCuneoFiscale > 0 ? [{
+      icon: "🎯",
+      label: "Ulteriore Detrazione Cuneo",
+      description: "Bonus 2025 per redditi €20k-€40k",
+      amount: -trattenute.detrazioneCuneoFiscale,
+      isPositive: true,
+      percentage: trattenute.detrazioneCuneoFiscale / trattenute.ralLorda * 100
+    }] : []),
+    {
+      icon: "🏛️",
+      label: "IRPEF Netta",
+      description: "Il pizzo di Stato (legale)",
+      amount: trattenute.irpefNetta,
+      percentage: trattenute.irpefNetta / trattenute.ralLorda * 100
+    },
+    {
+      icon: "🗺️",
+      label: "Addizionale Regionale",
+      description: `Il pedaggio per vivere in ${city.region}`,
+      amount: trattenute.addizionaleRegionale,
+      percentage: trattenute.addizionaleRegionale / trattenute.ralLorda * 100
+    },
+    {
+      icon: "🏘️",
+      label: "Addizionale Comunale",
+      description: "Il contributo per le buche nelle strade",
+      amount: trattenute.addizionaleComunale,
+      percentage: trattenute.addizionaleComunale / trattenute.ralLorda * 100
+    },
+    ...(trattenute.bonusCuneoFiscale && trattenute.bonusCuneoFiscale > 0 ? [{
+      icon: "💰",
+      label: "Bonus Cuneo Fiscale",
+      description: "Esonero contributivo per redditi ≤ €20k",
+      amount: trattenute.bonusCuneoFiscale,
+      isPositive: true,
+      percentage: trattenute.bonusCuneoFiscale / trattenute.ralLorda * 100
+    }] : []),
+    ...(trattenute.trattamentoIntegrativo && trattenute.trattamentoIntegrativo > 0 ? [{
+      icon: "🎁",
+      label: "Trattamento Integrativo",
+      description: "Ex Bonus Renzi",
+      amount: trattenute.trattamentoIntegrativo,
+      isPositive: true,
+      percentage: trattenute.trattamentoIntegrativo / trattenute.ralLorda * 100
+    }] : [])
+  ];
   const maxAmount = Math.max(...items.map(item => Math.abs(item.amount)));
   return <>
       <Card className="p-6 bg-card shadow-medium">
@@ -90,8 +121,8 @@ export function BreakdownList({
             </div>
           </div>)}
         
-        {/* Total */}
-        <div className="pt-4 border-t-2 border-border">
+        {/* Totals */}
+        <div className="pt-4 border-t-2 border-border space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-2xl">💸</span>
@@ -106,57 +137,34 @@ export function BreakdownList({
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </Card>
 
-    {/* Bonus Fiscali 2025 */}
-    {trattenute.totaleBonusNetti > 0 && <Card className="p-6 bg-success/10 border-success/20 shadow-medium mt-6">
-        <h3 className="text-xl font-bold mb-6 text-success-foreground flex items-center gap-2">
-          🎁 Bonus Fiscali 2025
-        </h3>
-        
-        <div className="space-y-4">
-          {trattenute.hasBonusCuneo && <div className="flex items-center justify-between animate-slide-in">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">💰</span>
-                <div>
-                  <div className="font-semibold text-sm">Bonus Cuneo Fiscale</div>
-                  <div className="text-xs text-muted-foreground">Esonero contributivo</div>
-                </div>
-              </div>
-              <div className="font-bold text-success">
-                +{formatEuro(trattenute.bonusCuneoFiscale)}
-              </div>
-            </div>}
-          
-          {trattenute.hasTrattamentoIntegrativo && <div className="flex items-center justify-between animate-slide-in" style={{
-          animationDelay: '50ms'
-        }}>
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🎯</span>
-                <div>
-                  <div className="font-semibold text-sm">Trattamento Integrativo</div>
-                  <div className="text-xs text-muted-foreground">Ex Bonus Renzi</div>
-                </div>
-              </div>
-              <div className="font-bold text-success">
-                +{formatEuro(trattenute.trattamentoIntegrativo)}
-              </div>
-            </div>}
-          
-          <div className="pt-4 border-t-2 border-success/20">
+          {trattenute.totaleBonusNetti > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">✨</span>
+                <span className="text-2xl">🎁</span>
                 <div className="font-bold">Totale Bonus</div>
               </div>
-              <div className="font-bold text-lg text-success">
-                +{formatEuro(trattenute.totaleBonusNetti)}
+              <div className="text-right">
+                <div className="font-bold text-lg text-success">
+                  +{formatEuro(trattenute.totaleBonusNetti)}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-2 border-t border-border/50">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">💰</span>
+              <div className="font-bold text-lg">Netto Annuale</div>
+            </div>
+            <div className="text-right">
+              <div className="font-bold text-xl text-primary">
+                {formatEuro(trattenute.nettoAnnuale)}
               </div>
             </div>
           </div>
         </div>
-      </Card>}
+      </div>
+    </Card>
     </>;
 }
