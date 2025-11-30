@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { calcolaNettoCompleto, formatEuro, CITIES } from "@/utils/calculations";
+import { calcolaNettoCompleto, calcolaMensilitaMultiple, formatEuro, CITIES } from "@/utils/calculations";
 import type { CityCode } from "@/hooks/useCalcolatore";
 
 interface CityComparisonProps {
@@ -24,11 +24,12 @@ export function CityComparison({ ral, currentCity }: CityComparisonProps) {
     .map((cityCode) => {
       const calc = calcolaNettoCompleto(ral, cityCode);
       const city = CITIES[cityCode];
+      const mensilita = calcolaMensilitaMultiple(calc.nettoAnnuale);
       return {
         code: cityCode,
         name: city.name,
         emoji: city.emoji,
-        nettoMensile: calc.nettoMensile,
+        nettoMensile: mensilita.netto13,
         rank: 0,
       };
     })
