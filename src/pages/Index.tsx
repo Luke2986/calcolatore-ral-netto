@@ -58,14 +58,26 @@ const Index = () => {
             <div className="flex items-start gap-3">
               <span className="text-2xl flex-shrink-0">⚠️</span>
               <div>
-                <h2 className="font-semibold text-warning-foreground mb-1">
+                <h2 className="font-semibold text-warning-foreground mb-2">
                   Disclaimer
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                  Calcolatore semplificato basato su dipendente tempo indeterminato, 13 mensilità, 
-                  anno completo, nessun familiare a carico. Per calcoli precisi e consulenza fiscale 
-                  personalizzata, rivolgiti a un commercialista. I dati fiscali sono aggiornati al 2025.
-                </p>
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>
+                    <strong>Include:</strong> IRPEF 2025 (scaglioni 23%, 35%, 43%), contributi INPS, 
+                    detrazioni lavoro dipendente, <strong>bonus cuneo fiscale</strong>, 
+                    <strong>ulteriore detrazione cuneo</strong>, <strong>trattamento integrativo</strong>, 
+                    addizionali regionali e comunali.
+                  </p>
+                  <p>
+                    <strong>NON include:</strong> Familiari a carico, TFR, welfare aziendale, 
+                    fringe benefit, detrazioni 730 personalizzate.
+                  </p>
+                  <p>
+                    <strong>Ipotesi:</strong> Dipendente tempo indeterminato, 13 mensilità, 
+                    anno completo lavorato. Per calcoli precisi e consulenza fiscale personalizzata, 
+                    rivolgiti a un commercialista.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

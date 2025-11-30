@@ -9,14 +9,22 @@ export interface CalcoloResult {
   imponibileFiscale: number;
   irpefLorda: number;
   detrazioniLavoro: number;
+  detrazioneCuneoFiscale: number;
+  detrazioniTotali: number;
   irpefNetta: number;
   addizionaleRegionale: number;
   addizionaleComunale: number;
   totaleImposta: number;
   totaleTrattenute: number;
+  bonusCuneoFiscale: number;
+  trattamentoIntegrativo: number;
+  totaleBonusNetti: number;
   nettoAnnuale: number;
   nettoMensile: number;
   aliquotaEffettiva: number;
+  hasBonusCuneo: boolean;
+  hasDetrazioneCuneo: boolean;
+  hasTrattamentoIntegrativo: boolean;
 }
 
 export interface CityData {
@@ -156,6 +164,51 @@ export function calcAddizionaleComunale(imponibile: number, citta: string): numb
 }
 
 /**
+ * Calcola il Bonus Cuneo Fiscale per redditi ≤ €20.000
+ * Normativa: L. 207/2024, Art. 1, comma 4
+ */
+export function calcBonusCuneoFiscale(reddito: number): number {
+  if (reddito > 20000) return 0;
+  if (reddito <= 8500) return reddito * 0.071;
+  if (reddito <= 15000) return reddito * 0.053;
+  return reddito * 0.048; // €15.001-€20.000
+}
+
+/**
+ * Calcola detrazione aggiuntiva per redditi €20.001-€40.000
+ * Normativa: L. 207/2024, Art. 1, comma 6
+ */
+export function calcDetrazioneCuneoFiscale(reddito: number): number {
+  if (reddito <= 20000 || reddito > 40000) return 0;
+  if (reddito <= 32000) return 1000;
+  return 1000 * (40000 - reddito) / 8000; // Décalage progressivo
+}
+
+/**
+ * Calcola Trattamento Integrativo (ex Bonus Renzi)
+ * Normativa: D.L. 3/2020 + L. 207/2024
+ */
+export function calcTrattamentoIntegrativo(
+  reddito: number, 
+  irpefLorda: number, 
+  detrazioneLavoro: number, 
+  detrazioneCuneo: number
+): number {
+  if (reddito > 28000) return 0;
+  
+  if (reddito <= 15000) {
+    const sogliaCapienza = detrazioneLavoro - 75;
+    return irpefLorda > sogliaCapienza ? 1200 : 0;
+  }
+  
+  const detrazioniTotali = detrazioneLavoro + detrazioneCuneo;
+  if (detrazioniTotali > irpefLorda) {
+    return Math.min(1200, detrazioniTotali - irpefLorda);
+  }
+  return 0;
+}
+
+/**
  * Calcola tutto: da RAL a netto completo con breakdown dettagliato
  */
 export function calcolaNettoCompleto(ral: number, citta: string): CalcoloResult {
@@ -175,24 +228,40 @@ export function calcolaNettoCompleto(ral: number, citta: string): CalcoloResult 
   // 4. Detrazioni lavoro dipendente
   const detrazioniLavoro = calcDetrazioniLavoro(imponibileFiscale);
   
-  // 5. IRPEF netta (dopo detrazioni)
-  const irpefNetta = Math.max(0, irpefLorda - detrazioniLavoro);
+  // 5. Detrazione Cuneo Fiscale (NUOVO 2025)
+  const detrazioneCuneoFiscale = calcDetrazioneCuneoFiscale(imponibileFiscale);
   
-  // 6. Addizionali regionali e comunali
+  // 6. Detrazioni totali
+  const detrazioniTotali = detrazioniLavoro + detrazioneCuneoFiscale;
+  
+  // 7. IRPEF netta (dopo detrazioni totali)
+  const irpefNetta = Math.max(0, irpefLorda - detrazioniTotali);
+  
+  // 8. Addizionali regionali e comunali
   const addizionaleRegionale = calcAddizionaleRegionale(imponibileFiscale, citta);
   const addizionaleComunale = calcAddizionaleComunale(imponibileFiscale, citta);
   
-  // 7. Totale imposte
+  // 9. Totale imposte
   const totaleImposta = irpefNetta + addizionaleRegionale + addizionaleComunale;
   
-  // 8. Totale trattenute (INPS + imposte)
+  // 10. Bonus fiscali 2025
+  const bonusCuneoFiscale = calcBonusCuneoFiscale(imponibileFiscale);
+  const trattamentoIntegrativo = calcTrattamentoIntegrativo(
+    imponibileFiscale,
+    irpefLorda,
+    detrazioniLavoro,
+    detrazioneCuneoFiscale
+  );
+  const totaleBonusNetti = bonusCuneoFiscale + trattamentoIntegrativo;
+  
+  // 11. Totale trattenute (INPS + imposte)
   const totaleTrattenute = contributiINPS + totaleImposta;
   
-  // 9. Netto annuale e mensile
-  const nettoAnnuale = ral - totaleTrattenute;
+  // 12. Netto annuale (RAL - trattenute + bonus)
+  const nettoAnnuale = ral - totaleTrattenute + totaleBonusNetti;
   const nettoMensile = nettoAnnuale / 13; // 13 mensilità
   
-  // 10. Aliquota effettiva
+  // 13. Aliquota effettiva
   const aliquotaEffettiva = ral > 0 ? (totaleTrattenute / ral) * 100 : 0;
 
   return {
@@ -201,14 +270,22 @@ export function calcolaNettoCompleto(ral: number, citta: string): CalcoloResult 
     imponibileFiscale: Math.round(imponibileFiscale * 100) / 100,
     irpefLorda: Math.round(irpefLorda * 100) / 100,
     detrazioniLavoro: Math.round(detrazioniLavoro * 100) / 100,
+    detrazioneCuneoFiscale: Math.round(detrazioneCuneoFiscale * 100) / 100,
+    detrazioniTotali: Math.round(detrazioniTotali * 100) / 100,
     irpefNetta: Math.round(irpefNetta * 100) / 100,
     addizionaleRegionale: Math.round(addizionaleRegionale * 100) / 100,
     addizionaleComunale: Math.round(addizionaleComunale * 100) / 100,
     totaleImposta: Math.round(totaleImposta * 100) / 100,
     totaleTrattenute: Math.round(totaleTrattenute * 100) / 100,
+    bonusCuneoFiscale: Math.round(bonusCuneoFiscale * 100) / 100,
+    trattamentoIntegrativo: Math.round(trattamentoIntegrativo * 100) / 100,
+    totaleBonusNetti: Math.round(totaleBonusNetti * 100) / 100,
     nettoAnnuale: Math.round(nettoAnnuale * 100) / 100,
     nettoMensile: Math.round(nettoMensile * 100) / 100,
     aliquotaEffettiva: Math.round(aliquotaEffettiva * 10) / 10,
+    hasBonusCuneo: bonusCuneoFiscale > 0,
+    hasDetrazioneCuneo: detrazioneCuneoFiscale > 0,
+    hasTrattamentoIntegrativo: trattamentoIntegrativo > 0,
   };
 }
 

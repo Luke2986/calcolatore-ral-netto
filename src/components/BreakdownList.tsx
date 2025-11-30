@@ -36,10 +36,12 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
     {
       icon: "✨",
       label: "Detrazioni",
-      description: "Lo sconto che ti spetta",
-      amount: -trattenute.detrazioniLavoro,
+      description: trattenute.hasDetrazioneCuneo 
+        ? `Lavoro (${formatEuro(trattenute.detrazioniLavoro)}) + Cuneo 2025 (${formatEuro(trattenute.detrazioneCuneoFiscale)})`
+        : "Lo sconto che ti spetta",
+      amount: -trattenute.detrazioniTotali,
       isPositive: true,
-      percentage: (trattenute.detrazioniLavoro / trattenute.ralLorda) * 100,
+      percentage: (trattenute.detrazioniTotali / trattenute.ralLorda) * 100,
     },
     {
       icon: "🏛️",
@@ -67,7 +69,8 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
   const maxAmount = Math.max(...items.map(item => Math.abs(item.amount)));
 
   return (
-    <Card className="p-6 bg-card shadow-medium">
+    <>
+      <Card className="p-6 bg-card shadow-medium">
       <h3 className="text-xl font-bold mb-6">Breakdown trattenute 📊</h3>
       
       <div className="space-y-4">
@@ -122,5 +125,59 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
         </div>
       </div>
     </Card>
+
+    {/* Bonus Fiscali 2025 */}
+    {trattenute.totaleBonusNetti > 0 && (
+      <Card className="p-6 bg-success/10 border-success/20 shadow-medium mt-6">
+        <h3 className="text-xl font-bold mb-6 text-success-foreground flex items-center gap-2">
+          🎁 Bonus Fiscali 2025
+        </h3>
+        
+        <div className="space-y-4">
+          {trattenute.hasBonusCuneo && (
+            <div className="flex items-center justify-between animate-slide-in">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">💰</span>
+                <div>
+                  <div className="font-semibold text-sm">Bonus Cuneo Fiscale</div>
+                  <div className="text-xs text-muted-foreground">Esonero contributivo</div>
+                </div>
+              </div>
+              <div className="font-bold text-success">
+                +{formatEuro(trattenute.bonusCuneoFiscale)}
+              </div>
+            </div>
+          )}
+          
+          {trattenute.hasTrattamentoIntegrativo && (
+            <div className="flex items-center justify-between animate-slide-in" style={{ animationDelay: '50ms' }}>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🎯</span>
+                <div>
+                  <div className="font-semibold text-sm">Trattamento Integrativo</div>
+                  <div className="text-xs text-muted-foreground">Ex Bonus Renzi</div>
+                </div>
+              </div>
+              <div className="font-bold text-success">
+                +{formatEuro(trattenute.trattamentoIntegrativo)}
+              </div>
+            </div>
+          )}
+          
+          <div className="pt-4 border-t-2 border-success/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">✨</span>
+                <div className="font-bold">Totale Bonus</div>
+              </div>
+              <div className="font-bold text-lg text-success">
+                +{formatEuro(trattenute.totaleBonusNetti)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    )}
+    </>
   );
 }
