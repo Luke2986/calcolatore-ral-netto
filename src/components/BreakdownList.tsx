@@ -37,11 +37,11 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
       icon: "✨",
       label: "Detrazioni",
       description: trattenute.hasDetrazioneCuneo 
-        ? `Lavoro (${formatEuro(trattenute.detrazioniLavoro)}) + Cuneo 2025 (${formatEuro(trattenute.detrazioneCuneoFiscale)})`
+        ? `Lavoro (${formatEuro(trattenute.detrazioniLavoro)}) + Cuneo 2025 (${formatEuro(trattenute.detrazioneCuneoFiscale || 0)})`
         : "Lo sconto che ti spetta",
-      amount: -trattenute.detrazioniTotali,
+      amount: -(trattenute.detrazioniTotali || trattenute.detrazioniLavoro),
       isPositive: true,
-      percentage: (trattenute.detrazioniTotali / trattenute.ralLorda) * 100,
+      percentage: ((trattenute.detrazioniTotali || trattenute.detrazioniLavoro) / trattenute.ralLorda) * 100,
     },
     {
       icon: "🏛️",
