@@ -1,11 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { CalcoloResult, formatEuro, CITIES } from "@/utils/calculations";
-
 interface BreakdownListProps {
   trattenute: CalcoloResult;
   citta: string;
 }
-
 interface BreakdownItem {
   icon: string;
   label: string;
@@ -14,68 +12,58 @@ interface BreakdownItem {
   isPositive?: boolean;
   percentage: number;
 }
-
-export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
+export function BreakdownList({
+  trattenute,
+  citta
+}: BreakdownListProps) {
   const city = CITIES[citta] || CITIES.milano;
-  
-  const items: BreakdownItem[] = [
-    {
-      icon: "💼",
-      label: "INPS",
-      description: "Per la pensione che forse vedremo",
-      amount: trattenute.contributiINPS,
-      percentage: (trattenute.contributiINPS / trattenute.ralLorda) * 100,
-    },
-    {
-      icon: "🏛️",
-      label: "IRPEF Lorda",
-      description: "Prima dello sconto",
-      amount: trattenute.irpefLorda,
-      percentage: (trattenute.irpefLorda / trattenute.ralLorda) * 100,
-    },
-    {
-      icon: "✨",
-      label: "Detrazioni",
-      description: trattenute.hasDetrazioneCuneo 
-        ? `Lavoro (${formatEuro(trattenute.detrazioniLavoro)}) + Cuneo 2025 (${formatEuro(trattenute.detrazioneCuneoFiscale || 0)})`
-        : "Lo sconto che ti spetta",
-      amount: -(trattenute.detrazioniTotali || trattenute.detrazioniLavoro),
-      isPositive: true,
-      percentage: ((trattenute.detrazioniTotali || trattenute.detrazioniLavoro) / trattenute.ralLorda) * 100,
-    },
-    {
-      icon: "🏛️",
-      label: "IRPEF Netta",
-      description: "Il pizzo di Stato (legale)",
-      amount: trattenute.irpefNetta,
-      percentage: (trattenute.irpefNetta / trattenute.ralLorda) * 100,
-    },
-    {
-      icon: "🗺️",
-      label: "Addizionale Regionale",
-      description: `Il pedaggio per vivere in ${city.region}`,
-      amount: trattenute.addizionaleRegionale,
-      percentage: (trattenute.addizionaleRegionale / trattenute.ralLorda) * 100,
-    },
-    {
-      icon: "🏘️",
-      label: "Addizionale Comunale",
-      description: "Il contributo per le buche nelle strade",
-      amount: trattenute.addizionaleComunale,
-      percentage: (trattenute.addizionaleComunale / trattenute.ralLorda) * 100,
-    },
-  ];
-
+  const items: BreakdownItem[] = [{
+    icon: "💼",
+    label: "INPS",
+    description: "Per la pensione che forse vedremo",
+    amount: trattenute.contributiINPS,
+    percentage: trattenute.contributiINPS / trattenute.ralLorda * 100
+  }, {
+    icon: "🏛️",
+    label: "IRPEF Lorda",
+    description: "Prima dello sconto",
+    amount: trattenute.irpefLorda,
+    percentage: trattenute.irpefLorda / trattenute.ralLorda * 100
+  }, {
+    icon: "✨",
+    label: "Detrazioni",
+    description: trattenute.hasDetrazioneCuneo ? `Lavoro (${formatEuro(trattenute.detrazioniLavoro)}) + Cuneo 2025 (${formatEuro(trattenute.detrazioneCuneoFiscale || 0)})` : "Lo sconto che ti spetta",
+    amount: -(trattenute.detrazioniTotali || trattenute.detrazioniLavoro),
+    isPositive: true,
+    percentage: (trattenute.detrazioniTotali || trattenute.detrazioniLavoro) / trattenute.ralLorda * 100
+  }, {
+    icon: "🏛️",
+    label: "IRPEF Netta",
+    description: "Il pizzo di Stato (legale)",
+    amount: trattenute.irpefNetta,
+    percentage: trattenute.irpefNetta / trattenute.ralLorda * 100
+  }, {
+    icon: "🗺️",
+    label: "Addizionale Regionale",
+    description: `Il pedaggio per vivere in ${city.region}`,
+    amount: trattenute.addizionaleRegionale,
+    percentage: trattenute.addizionaleRegionale / trattenute.ralLorda * 100
+  }, {
+    icon: "🏘️",
+    label: "Addizionale Comunale",
+    description: "Il contributo per le buche nelle strade",
+    amount: trattenute.addizionaleComunale,
+    percentage: trattenute.addizionaleComunale / trattenute.ralLorda * 100
+  }];
   const maxAmount = Math.max(...items.map(item => Math.abs(item.amount)));
-
-  return (
-    <>
+  return <>
       <Card className="p-6 bg-card shadow-medium">
-      <h3 className="text-xl font-bold mb-6">Breakdown trattenute 📊</h3>
+      <h3 className="text-xl font-bold mb-6">Dettaglio trattenute 📊</h3>
       
       <div className="space-y-4">
-        {items.map((item, index) => (
-          <div key={index} className="space-y-2 animate-slide-in" style={{ animationDelay: `${index * 50}ms` }}>
+        {items.map((item, index) => <div key={index} className="space-y-2 animate-slide-in" style={{
+          animationDelay: `${index * 50}ms`
+        }}>
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3 flex-1 min-w-0">
                 <span className="text-2xl flex-shrink-0">{item.icon}</span>
@@ -96,15 +84,11 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
             
             {/* Progress bar */}
             <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  item.isPositive ? "bg-success" : "bg-destructive"
-                }`}
-                style={{ width: `${(Math.abs(item.amount) / maxAmount) * 100}%` }}
-              />
+              <div className={`h-full rounded-full transition-all duration-500 ${item.isPositive ? "bg-success" : "bg-destructive"}`} style={{
+              width: `${Math.abs(item.amount) / maxAmount * 100}%`
+            }} />
             </div>
-          </div>
-        ))}
+          </div>)}
         
         {/* Total */}
         <div className="pt-4 border-t-2 border-border">
@@ -127,15 +111,13 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
     </Card>
 
     {/* Bonus Fiscali 2025 */}
-    {trattenute.totaleBonusNetti > 0 && (
-      <Card className="p-6 bg-success/10 border-success/20 shadow-medium mt-6">
+    {trattenute.totaleBonusNetti > 0 && <Card className="p-6 bg-success/10 border-success/20 shadow-medium mt-6">
         <h3 className="text-xl font-bold mb-6 text-success-foreground flex items-center gap-2">
           🎁 Bonus Fiscali 2025
         </h3>
         
         <div className="space-y-4">
-          {trattenute.hasBonusCuneo && (
-            <div className="flex items-center justify-between animate-slide-in">
+          {trattenute.hasBonusCuneo && <div className="flex items-center justify-between animate-slide-in">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">💰</span>
                 <div>
@@ -146,11 +128,11 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
               <div className="font-bold text-success">
                 +{formatEuro(trattenute.bonusCuneoFiscale)}
               </div>
-            </div>
-          )}
+            </div>}
           
-          {trattenute.hasTrattamentoIntegrativo && (
-            <div className="flex items-center justify-between animate-slide-in" style={{ animationDelay: '50ms' }}>
+          {trattenute.hasTrattamentoIntegrativo && <div className="flex items-center justify-between animate-slide-in" style={{
+          animationDelay: '50ms'
+        }}>
               <div className="flex items-center gap-3">
                 <span className="text-2xl">🎯</span>
                 <div>
@@ -161,8 +143,7 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
               <div className="font-bold text-success">
                 +{formatEuro(trattenute.trattamentoIntegrativo)}
               </div>
-            </div>
-          )}
+            </div>}
           
           <div className="pt-4 border-t-2 border-success/20">
             <div className="flex items-center justify-between">
@@ -176,8 +157,6 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
             </div>
           </div>
         </div>
-      </Card>
-    )}
-    </>
-  );
+      </Card>}
+    </>;
 }
