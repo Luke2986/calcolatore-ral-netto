@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
-import { calcolaNettoCompleto, type CalcoloResult } from "@/utils/calculations";
+import { calcolaNettoCompleto } from "@/utils/calculations";
+import type { CalcoloResult, CityCode } from "@/types/calculator";
 
-export type CityCode = "milano" | "bologna" | "roma" | "napoli";
+export type { CityCode };
 
 export function useCalcolatore(initialRal: number = 35000, initialCitta: CityCode = "milano") {
   const [ral, setRal] = useState(initialRal);

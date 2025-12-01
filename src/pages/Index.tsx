@@ -41,7 +41,12 @@ const Index = () => {
           </div>
 
           {/* Results Section */}
-          <ResultCard nettoAnnuale={risultati.nettoAnnuale} nettoMensile={risultati.nettoMensile} aliquotaEffettiva={risultati.aliquotaEffettiva} ral={ral} />
+          <ResultCard 
+            nettoAnnuale={risultati.netto.annuale} 
+            nettoMensile={risultati.netto.mensile} 
+            aliquotaEffettiva={risultati.percentuali.aliquotaEffettiva} 
+            ral={ral} 
+          />
 
           {/* Breakdown Section */}
           <BreakdownList trattenute={risultati} citta={citta} />

@@ -1,7 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { calcolaNettoCompleto, calcolaMensilitaMultiple, formatEuro, CITIES } from "@/utils/calculations";
-import type { CityCode } from "@/hooks/useCalcolatore";
+import { calcolaNettoCompleto, calcolaMensilitaMultiple } from "@/utils/calculations";
+import { formatEuro } from "@/utils/formatters";
+import { CITIES } from "@/data/cityConfig";
+import type { CityCode } from "@/types/calculator";
 
 interface CityComparisonProps {
   ral: number;
@@ -18,13 +20,13 @@ interface CityResult {
 
 export function CityComparison({ ral, currentCity }: CityComparisonProps) {
   const cities: CityCode[] = ["milano", "bologna", "roma", "napoli"];
-  
+
   // Calcola per tutte le città
   const results: CityResult[] = cities
     .map((cityCode) => {
       const calc = calcolaNettoCompleto(ral, cityCode);
       const city = CITIES[cityCode];
-      const mensilita = calcolaMensilitaMultiple(calc.nettoAnnuale);
+      const mensilita = calcolaMensilitaMultiple(calc.netto.annuale);
       return {
         code: cityCode,
         name: city.name,
@@ -45,10 +47,14 @@ export function CityComparison({ ral, currentCity }: CityComparisonProps) {
 
   const getRankEmoji = (rank: number) => {
     switch (rank) {
-      case 1: return "🥇";
-      case 2: return "🥈";
-      case 3: return "🥉";
-      default: return "4️⃣";
+      case 1:
+        return "🥇";
+      case 2:
+        return "🥈";
+      case 3:
+        return "🥉";
+      default:
+        return "4️⃣";
     }
   };
 
@@ -58,8 +64,8 @@ export function CityComparison({ ral, currentCity }: CityComparisonProps) {
         <h3 className="text-xl font-bold mb-2">Confronto città 🗺️</h3>
         <p className="text-sm text-muted-foreground">
           A <span className="font-semibold text-foreground">{best.name}</span> guadagni{" "}
-          <span className="font-semibold text-success">{formatEuro(difference)}/mese</span> in più che a{" "}
-          <span className="font-semibold text-foreground">{worst.name}</span>
+          <span className="font-semibold text-success">{formatEuro(difference)}/mese</span> in più che
+          a <span className="font-semibold text-foreground">{worst.name}</span>
         </p>
       </div>
 
@@ -67,7 +73,7 @@ export function CityComparison({ ral, currentCity }: CityComparisonProps) {
         {results.map((result, index) => {
           const isCurrentCity = result.code === currentCity;
           const isBest = result.rank === 1;
-          
+
           return (
             <div
               key={result.code}
@@ -87,14 +93,14 @@ export function CityComparison({ ral, currentCity }: CityComparisonProps) {
                     {getRankEmoji(result.rank)}
                   </Badge>
                 </div>
-                
+
                 <div className="font-semibold text-sm mb-1">{result.name}</div>
-                
+
                 <div className="text-lg font-bold text-foreground">
                   {formatEuro(result.nettoMensile)}
                 </div>
                 <div className="text-xs text-muted-foreground">al mese</div>
-                
+
                 {isCurrentCity && (
                   <Badge variant="outline" className="mt-2 text-xs">
                     Selezionata

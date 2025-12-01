@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
-import { CITIES } from "@/utils/calculations";
+import { CITIES } from "@/data/cityConfig";
 import { cn } from "@/lib/utils";
-import type { CityCode } from "@/hooks/useCalcolatore";
+import type { CityCode } from "@/types/calculator";
 
 interface CitySelectorProps {
   value: CityCode;
@@ -19,7 +19,7 @@ export function CitySelector({ value, onChange, className }: CitySelectorProps) 
         {cities.map((cityCode) => {
           const city = CITIES[cityCode];
           const isSelected = value === cityCode;
-          
+
           return (
             <Card
               key={cityCode}
@@ -35,7 +35,7 @@ export function CitySelector({ value, onChange, className }: CitySelectorProps) 
                 <div className="text-3xl">{city.emoji}</div>
                 <div>
                   <div className="font-semibold text-sm">{city.name}</div>
-                  <div className="text-xs text-muted-foreground">{city.region}</div>
+                  <div className="text-xs text-muted-foreground">{city.regione}</div>
                 </div>
               </div>
             </Card>
