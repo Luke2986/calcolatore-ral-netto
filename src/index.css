@@ -32,7 +32,7 @@ All colors MUST be HSL.
     --destructive: 350 89% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 160 84% 30%;
+    --success: 160 84% 24%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -54,14 +54,14 @@ All colors MUST be HSL.
     --sidebar-ring: 160 84% 39%;
 
     /* Custom gradient tokens */
-    --gradient-success: linear-gradient(135deg, hsl(160 84% 30%), hsl(160 84% 40%));
+    --gradient-success: linear-gradient(135deg, hsl(160 84% 24%), hsl(160 84% 34%));
     --gradient-destructive: linear-gradient(135deg, hsl(350 89% 48%), hsl(350 89% 58%));
     --gradient-subtle: linear-gradient(180deg, hsl(210 40% 98%), hsl(220 13% 96%));
     
     /* Custom shadow tokens */
     --shadow-soft: 0 2px 8px -2px hsl(220 13% 85%);
     --shadow-medium: 0 8px 24px -4px hsl(220 13% 80%);
-    --shadow-success: 0 8px 24px -4px hsl(160 84% 30% / 0.2);
+    --shadow-success: 0 8px 24px -4px hsl(160 84% 24% / 0.2);
     --shadow-destructive: 0 8px 24px -4px hsl(350 89% 48% / 0.2);
   }
 
