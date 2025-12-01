@@ -159,4 +159,18 @@ All colors MUST be HSL.
   .animate-slide-in {
     animation: slide-in 0.4s ease-out;
   }
+
+  /* Fix Lovable badge close button touch target size for WCAG 2.2 AA compliance */
+  #lovable-badge-close {
+    min-width: 24px !important;
+    min-height: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    top: 2px !important;
+    right: 2px !important;
+  }
 }
