@@ -53,6 +53,10 @@ export interface CalcoloResult {
     hasBonusCuneo: boolean;
     hasDetrazioneCuneo: boolean;
     hasTrattamentoIntegrativo: boolean;
+    // Motivi per applicabilità/non applicabilità (per trasparenza UI)
+    bonusCuneoReason: 'eligible' | 'over_threshold';
+    detrazioneCuneoReason: 'eligible' | 'under_threshold' | 'over_threshold';
+    trattamentoIntegrativoReason: 'eligible' | 'over_threshold' | 'incapiente';
   };
 }
 

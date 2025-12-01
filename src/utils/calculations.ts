@@ -227,6 +227,8 @@ export function calcolaNettoCompleto(ral: number, citta: CityCode): CalcoloResul
 
   // Step 9: Bonus cuneo fiscale (≤€20k)
   const bonusCuneoFiscale = calcBonusCuneoFiscale(imponibileIRPEF);
+  const bonusCuneoReason: 'eligible' | 'over_threshold' = 
+    imponibileIRPEF <= SOGLIE_BONUS.cuneoFiscale ? 'eligible' : 'over_threshold';
 
   // Step 10: Trattamento integrativo
   const trattamentoIntegrativo = calcTrattamentoIntegrativo(
@@ -235,6 +237,25 @@ export function calcolaNettoCompleto(ral: number, citta: CityCode): CalcoloResul
     detrazioneLavoroDipendente,
     detrazioneCuneoFiscale
   );
+  
+  // Calcola motivo per trattamento integrativo
+  let trattamentoIntegrativoReason: 'eligible' | 'over_threshold' | 'incapiente' = 'over_threshold';
+  if (imponibileIRPEF <= SOGLIE_BONUS.trattamentoIntegrativo.soglia2) {
+    if (trattamentoIntegrativo > 0) {
+      trattamentoIntegrativoReason = 'eligible';
+    } else {
+      // Se reddito ≤ €28k ma bonus = 0, è per incapienza
+      trattamentoIntegrativoReason = 'incapiente';
+    }
+  }
+
+  // Calcola motivo per detrazione cuneo
+  let detrazioneCuneoReason: 'eligible' | 'under_threshold' | 'over_threshold' = 'under_threshold';
+  if (imponibileIRPEF > SOGLIE_BONUS.detrazioneCuneo.min && imponibileIRPEF <= SOGLIE_BONUS.detrazioneCuneo.max) {
+    detrazioneCuneoReason = 'eligible';
+  } else if (imponibileIRPEF > SOGLIE_BONUS.detrazioneCuneo.max) {
+    detrazioneCuneoReason = 'over_threshold';
+  }
 
   // Step 11: Totali
   const totaleTrattenute = contributiINPS + irpefNetta + addizionaleRegionale + addizionaleComunale;
@@ -294,6 +315,9 @@ export function calcolaNettoCompleto(ral: number, citta: CityCode): CalcoloResul
       hasBonusCuneo: bonusCuneoFiscale > 0,
       hasDetrazioneCuneo: detrazioneCuneoFiscale > 0,
       hasTrattamentoIntegrativo: trattamentoIntegrativo > 0,
+      bonusCuneoReason,
+      detrazioneCuneoReason,
+      trattamentoIntegrativoReason,
     },
   };
 }
