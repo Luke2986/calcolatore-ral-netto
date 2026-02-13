@@ -9,25 +9,25 @@ export const EasterEgg = () => {
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 shadow-xl flex items-center justify-center text-2xl animate-bounce hover:animate-none cursor-pointer"
-        aria-label="Easter egg"
-      >
+        aria-label="Easter egg">
+
         🎭
       </button>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
-          onClick={() => setOpen(false)}
-        >
+      {open &&
+      <div
+        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
+        onClick={() => setOpen(false)}>
+
           <div
-            className="relative bg-card rounded-2xl shadow-xl max-w-md w-full mx-4 p-8"
-            onClick={(e) => e.stopPropagation()}
-          >
+          className="relative bg-card rounded-2xl shadow-xl max-w-md w-full mx-4 p-8"
+          onClick={(e) => e.stopPropagation()}>
+
             <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Chiudi"
-            >
+            onClick={() => setOpen(false)}
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Chiudi">
+
               <X className="h-5 w-5" />
             </button>
 
@@ -39,7 +39,7 @@ export const EasterEgg = () => {
               <li className="flex gap-2">
                 <span className="text-purple-600 font-bold">•</span>
                 <span>
-                  <a href="https://forfettino.lovable.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-purple-600 hover:text-purple-700 underline decoration-2 underline-offset-2">Forfettino</a>: 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta
+                  <a target="_blank" rel="noopener noreferrer" className="font-semibold text-purple-600 hover:text-purple-700 underline decoration-2 underline-offset-2" href="">Forfettino</a>: 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta
                 </span>
               </li>
               <li className="flex gap-2"><span className="text-purple-600 font-bold">•</span><span>Corso Product Builder in partenza fine mese</span></li>
@@ -61,7 +61,7 @@ export const EasterEgg = () => {
             </div>
           </div>
         </div>
-      )}
-    </>
-  );
+      }
+    </>);
+
 };
