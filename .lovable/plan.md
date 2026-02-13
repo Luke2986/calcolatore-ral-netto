@@ -1,31 +1,45 @@
 
 
-## Piano: Rimuovere il numero di telefono dall'Easter Egg
+## Piano: Aggiungere link a Forfettino nell'Easter Egg
 
-### Modifica
+### Modifiche al file `src/components/EasterEgg.tsx`
 
-**File:** `src/components/EasterEgg.tsx`
+**1. Aggiornare il primo bullet point** per rendere "Forfettino" un link cliccabile verso `https://forfettino.lovable.app`
 
-Rimuovere il link telefonico "333 443 5111" dal footer del modal. Il footer mostrera solo il nome "Luca Versilia", centrato o allineato a sinistra.
+**2. Aggiungere il paragrafo "provalo qui"** subito dopo la CTA "Se vi interessa, ci sono."
+
+### Risultato finale del contenuto del modal
+
+```
+Titolo: "So di essere gia stato scartato."
+
+- [Forfettino](link): 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta
+- Corso Product Builder in partenza fine mese
+- IRPEF/INPS/detrazioni: la prima volta non sapevo rispondere, ora un po' meglio
+- Codice di questo prototipo? Ora so spiegare le logiche principali
+
+Se vi interessa, ci sono.
+(Forfettino e live: provalo qui ->)
+
+--- separatore ---
+Luca Versilia
+```
 
 ### Dettaglio tecnico
 
-Sostituire il `div` footer (righe 53-62) che contiene il layout flex con nome e telefono, con una versione che mostra solo il nome:
+Modifiche alla lista (righe 38-43):
+- Il primo `<li>` diventa un flex container con bullet viola e link a Forfettino
+- Gli altri bullet mantengono lo stesso stile con flex + span per coerenza visiva
 
-```tsx
-// Da:
-<div className="flex items-center justify-between ...">
-  <span>Luca Versilia</span>
-  <a href="tel:3334435111">333 443 5111</a>
-</div>
+Aggiunta dopo la CTA (dopo riga 47):
+- Un paragrafo `text-sm text-muted-foreground` con link a `https://forfettino.it/`
+- Il link usa `text-purple-600 hover:text-purple-700` per risaltare
 
-// A:
-<div className="text-sm text-muted-foreground border-t border-border pt-4">
-  <span className="font-medium text-foreground">Luca Versilia</span>
-</div>
-```
+Note sullo stile:
+- Si mantengono le classi semantiche (`text-foreground`, `text-muted-foreground`) per compatibilita col tema
+- Solo i link usano `text-purple-600` come accento di colore
+- Tutti i link esterni hanno `target="_blank"` e `rel="noopener noreferrer"`
 
 ### Cosa NON viene toccato
 - Nessun altro file
 - Nessun componente di calcolo o dashboard
-
