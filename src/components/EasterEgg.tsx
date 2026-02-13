@@ -36,14 +36,24 @@ export const EasterEgg = () => {
             </h2>
 
             <ul className="space-y-3 text-sm text-muted-foreground mb-6">
-              <li>• Forfettino: 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta</li>
-              <li>• Corso Product Builder in partenza fine mese</li>
-              <li>• IRPEF/INPS/detrazioni: la prima volta non sapevo rispondere, ora un po' meglio</li>
-              <li>• Codice di questo prototipo? Ora so spiegare le logiche principali</li>
+              <li className="flex gap-2">
+                <span className="text-purple-600 font-bold">•</span>
+                <span>
+                  <a href="https://forfettino.lovable.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-purple-600 hover:text-purple-700 underline decoration-2 underline-offset-2">Forfettino</a>: 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta
+                </span>
+              </li>
+              <li className="flex gap-2"><span className="text-purple-600 font-bold">•</span><span>Corso Product Builder in partenza fine mese</span></li>
+              <li className="flex gap-2"><span className="text-purple-600 font-bold">•</span><span>IRPEF/INPS/detrazioni: la prima volta non sapevo rispondere, ora un po' meglio</span></li>
+              <li className="flex gap-2"><span className="text-purple-600 font-bold">•</span><span>Codice di questo prototipo? Ora so spiegare le logiche principali</span></li>
             </ul>
 
-            <p className="font-bold text-foreground mb-6">
+            <p className="font-bold text-foreground mb-2">
               Se vi interessa, ci sono.
+            </p>
+
+            <p className="text-sm text-muted-foreground mb-6">
+              (Forfettino è live:
+              <a href="https://forfettino.it/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium ml-1">provalo qui →</a>)
             </p>
 
             <div className="text-sm text-muted-foreground border-t border-border pt-4">
