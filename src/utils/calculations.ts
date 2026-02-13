@@ -198,6 +198,8 @@ export function calcolaMensilitaMultiple(nettoAnnuale: number): {
  * FUNZIONE PRINCIPALE: Calcola tutto il breakdown RAL → Netto
  */
 export function calcolaNettoCompleto(ral: number, citta: CityCode): CalcoloResult {
+  // Clamp RAL to safe range to prevent calculation errors
+  ral = Math.max(0, Math.min(ral, 1_000_000));
   const cityData = CITIES[citta];
 
   // Step 1: INPS
