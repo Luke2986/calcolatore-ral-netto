@@ -52,8 +52,8 @@ export const EasterEgg = () => {
             </p>
 
             <p className="text-sm text-muted-foreground mb-6">
-              (Forfettino è live:
-              <a href="https://forfettino.it/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium ml-1">provalo qui →</a>)
+              (Forfettino è qui:
+              <a href="https://forfettino.it/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium ml-1">provami</a>)
             </p>
 
             <div className="text-sm text-muted-foreground border-t border-border pt-4">
