@@ -39,7 +39,7 @@ export const EasterEgg = () => {
               <li className="flex gap-2">
                 <span className="text-purple-600 font-bold">•</span>
                 <span>
-                  <span className="font-semibold text-purple-600">Forfettino</span>: 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta
+                  <span className="font-semibold text-gray-600">Forfettino</span>: 11 utenti attivi, fatto in 7 giorni con Claude Code da autodidatta
                 </span>
               </li>
               <li className="flex gap-2"><span className="text-purple-600 font-bold">•</span><span>Corso Product Builder in partenza fine mese</span></li>
