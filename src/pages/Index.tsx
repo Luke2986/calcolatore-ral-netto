@@ -4,6 +4,7 @@ import { CitySelector } from "@/components/CitySelector";
 import { ResultCard } from "@/components/ResultCard";
 import { BreakdownList } from "@/components/BreakdownList";
 import { CityComparison } from "@/components/CityComparison";
+import { EasterEgg } from "@/components/EasterEgg";
 const Index = () => {
   const {
     ral,
@@ -96,6 +97,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
+      <EasterEgg />
     </div>;
 };
 export default Index;
