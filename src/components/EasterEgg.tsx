@@ -46,14 +46,8 @@ export const EasterEgg = () => {
               Se vi interessa, ci sono.
             </p>
 
-            <div className="flex items-center justify-between text-sm text-muted-foreground border-t border-border pt-4">
+            <div className="text-sm text-muted-foreground border-t border-border pt-4">
               <span className="font-medium text-foreground">Luca Versilia</span>
-              <a
-                href="tel:3334435111"
-                className="text-primary hover:underline font-medium"
-              >
-                333 443 5111
-              </a>
             </div>
           </div>
         </div>
