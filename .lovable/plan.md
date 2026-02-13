@@ -1,48 +1,31 @@
 
 
-## Piano: Easter Egg per il team JetHR
+## Piano: Rimuovere il numero di telefono dall'Easter Egg
 
-### Cosa faremo
+### Modifica
 
-Creare un pulsante flottante con emoji teatro (maschera) nell'angolo in basso a destra dello schermo. Cliccandolo si apre un modal con un messaggio personale per il team JetHR.
+**File:** `src/components/EasterEgg.tsx`
 
-### File coinvolti
+Rimuovere il link telefonico "333 443 5111" dal footer del modal. Il footer mostrera solo il nome "Luca Versilia", centrato o allineato a sinistra.
 
-| File | Azione |
-|------|--------|
-| `src/components/EasterEgg.tsx` | Nuovo - componente con pulsante flottante + modal |
-| `src/pages/Index.tsx` | Modifica minima - importare e inserire `<EasterEgg />` |
+### Dettaglio tecnico
 
-### Dettagli tecnici
+Sostituire il `div` footer (righe 53-62) che contiene il layout flex con nome e telefono, con una versione che mostra solo il nome:
 
-**1. `src/components/EasterEgg.tsx`** (nuovo file)
+```tsx
+// Da:
+<div className="flex items-center justify-between ...">
+  <span>Luca Versilia</span>
+  <a href="tel:3334435111">333 443 5111</a>
+</div>
 
-- `useState<boolean>` per gestire apertura/chiusura del modal
-- Pulsante flottante:
-  - `fixed bottom-6 right-6 z-50`
-  - Cerchio con gradiente `from-purple-600 to-pink-600`
-  - Shadow elevata (`shadow-xl`)
-  - Emoji teatro come icona
-  - `animate-bounce` che si ferma con `hover:animate-none`
-- Modal (renderizzato condizionalmente):
-  - Overlay scuro (`bg-black/60`) con `onClick` per chiudere
-  - z-index 50+ per stare sopra tutto
-  - Pulsante X con icona `X` da lucide-react in alto a destra
-  - Contenuto:
-    - Titolo: "So di essere gia stato scartato."
-    - Lista puntata con i 4 messaggi richiesti
-    - CTA in grassetto: "Se vi interessa, ci sono."
-    - Footer con "Luca Versilia" a sinistra e "333 443 5111" (link `tel:`) a destra
-  - Chiusura: click su X oppure click sull'overlay
-
-**2. `src/pages/Index.tsx`** (modifica minima)
-
-- Aggiungere import di `EasterEgg`
-- Inserire `<EasterEgg />` alla fine del JSX, prima della chiusura del `</div>` principale
+// A:
+<div className="text-sm text-muted-foreground border-t border-border pt-4">
+  <span className="font-medium text-foreground">Luca Versilia</span>
+</div>
+```
 
 ### Cosa NON viene toccato
-
-- Nessun file di calcolo (`calculations.ts`, `fiscalData2025.ts`, ecc.)
-- Nessun componente esistente della dashboard (ResultCard, BreakdownList, ecc.)
-- Nessuno stile globale
+- Nessun altro file
+- Nessun componente di calcolo o dashboard
 
