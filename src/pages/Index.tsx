@@ -97,7 +97,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
-      <EasterEgg />
+      
     </div>;
 };
 export default Index;
