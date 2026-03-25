@@ -14,35 +14,28 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
   const max = 100000;
   const step = 500;
 
-  const formatInputValue = (val: number): string => {
-    return new Intl.NumberFormat("it-IT").format(val);
-  };
+  const formatInputValue = (val: number): string =>
+    new Intl.NumberFormat("it-IT").format(val);
 
   const [inputValue, setInputValue] = useState(formatInputValue(value));
   const [isFocused, setIsFocused] = useState(false);
 
-  // Sync when external value changes (e.g., from slider)
   useEffect(() => {
-    if (!isFocused) {
-      setInputValue(formatInputValue(value));
-    }
+    if (!isFocused) setInputValue(formatInputValue(value));
   }, [value, isFocused]);
 
-  const handleSliderChange = (values: number[]) => {
-    onChange(values[0]);
-  };
+  const handleSliderChange = (values: number[]) => onChange(values[0]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, "");
-    setInputValue(rawValue);
+    setInputValue(e.target.value.replace(/[^0-9]/g, ""));
   };
 
   const handleBlur = () => {
     setIsFocused(false);
     const numValue = parseInt(inputValue.replace(/[^0-9]/g, "")) || min;
-    const clampedValue = Math.min(Math.max(numValue, min), max);
-    onChange(clampedValue);
-    setInputValue(formatInputValue(clampedValue));
+    const clamped = Math.min(Math.max(numValue, min), max);
+    onChange(clamped);
+    setInputValue(formatInputValue(clamped));
   };
 
   const handleFocus = () => {
@@ -50,16 +43,19 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
     setInputValue(value.toString());
   };
 
+  const percentage = ((value - min) / (max - min)) * 100;
+
   return (
     <div className={className}>
-      <Label htmlFor="ral-input" className="text-base font-semibold mb-3 block">
-        RAL promessa ✨
+      <Label htmlFor="ral-input" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4 block">
+        RAL Lorda ✨
       </Label>
-      <div className="space-y-6">
-        <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">
+
+      <div className="space-y-5">
+        <div className="relative group">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-lg pointer-events-none select-none">
             €
-          </span>
+          </div>
           <Input
             id="ral-input"
             type="text"
@@ -67,22 +63,28 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
             onChange={handleInputChange}
             onBlur={handleBlur}
             onFocus={handleFocus}
-            className="text-2xl font-bold h-14 pl-10 pr-4 bg-card shadow-soft"
-            placeholder="Es: 35.000 (sognare è gratis)"
+            className="text-3xl font-black h-16 pl-9 pr-4 bg-background dark:bg-muted/30 border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all rounded-xl shadow-xs"
+            placeholder="35.000"
+            data-testid="input-ral"
           />
         </div>
-        <Slider
-          value={[value]}
-          onValueChange={handleSliderChange}
-          min={min}
-          max={max}
-          step={step}
-          className="w-full touch-none"
-          aria-label="Seleziona la RAL promessa"
-        />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>€{formatInputValue(min)}</span>
-          <span>€{formatInputValue(max)}</span>
+
+        <div className="space-y-3">
+          <Slider
+            value={[value]}
+            onValueChange={handleSliderChange}
+            min={min}
+            max={max}
+            step={step}
+            className="w-full touch-none"
+            aria-label="Seleziona la RAL"
+            data-testid="slider-ral"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground font-medium">
+            <span>€{formatInputValue(min)}</span>
+            <span className="text-primary font-semibold">{percentage.toFixed(0)}%</span>
+            <span>€{formatInputValue(max)}</span>
+          </div>
         </div>
       </div>
     </div>

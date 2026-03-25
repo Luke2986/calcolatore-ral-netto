@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Info, TrendingDown, TrendingUp, CheckCircle2, XCircle } from "lucide-react";
 import type { CalcoloResult } from "@/types/calculator";
 import { CITIES } from "@/data/cityConfig";
 import { formatEuro } from "@/utils/formatters";
 import { BONUS_NOT_APPLICABLE_REASONS, BONUS_TOOLTIP_TEXTS } from "@/utils/messages";
+import { cn } from "@/lib/utils";
 
 interface BreakdownListProps {
   trattenute: CalcoloResult;
@@ -18,7 +18,7 @@ interface BreakdownItem {
   amount: number;
   isPositive?: boolean;
   percentage: number;
-  isActive?: boolean; // Nuovo: indica se il bonus è attivo
+  isActive?: boolean;
   tooltip?: {
     title: string;
     description: string;
@@ -29,25 +29,14 @@ interface BreakdownItem {
 
 export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
   const city = CITIES[citta] || CITIES.milano;
-  
-  // Determina i motivi di applicabilità per ogni bonus
-  const getBonusReason = (reason: string, reasons: Record<string, string>) => {
-    return reasons[reason] || reasons.eligible;
-  };
 
-  const bonusCuneoDescription = getBonusReason(
-    trattenute.flags.bonusCuneoReason,
-    BONUS_NOT_APPLICABLE_REASONS.bonusCuneo
-  );
-  const detrazioneCuneoDescription = getBonusReason(
-    trattenute.flags.detrazioneCuneoReason,
-    BONUS_NOT_APPLICABLE_REASONS.detrazioneCuneo
-  );
-  const trattamentoIntegrativoDescription = getBonusReason(
-    trattenute.flags.trattamentoIntegrativoReason,
-    BONUS_NOT_APPLICABLE_REASONS.trattamentoIntegrativo
-  );
-  
+  const getBonusReason = (reason: string, reasons: Record<string, string>) =>
+    reasons[reason] || reasons.eligible;
+
+  const bonusCuneoDescription = getBonusReason(trattenute.flags.bonusCuneoReason, BONUS_NOT_APPLICABLE_REASONS.bonusCuneo);
+  const detrazioneCuneoDescription = getBonusReason(trattenute.flags.detrazioneCuneoReason, BONUS_NOT_APPLICABLE_REASONS.detrazioneCuneo);
+  const trattamentoIntegrativoDescription = getBonusReason(trattenute.flags.trattamentoIntegrativoReason, BONUS_NOT_APPLICABLE_REASONS.trattamentoIntegrativo);
+
   const items: BreakdownItem[] = [
     {
       icon: "💼",
@@ -71,7 +60,6 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
       isPositive: true,
       percentage: (trattenute.trattenute.detrazioneLavoroDipendente / trattenute.input.ral) * 100,
     },
-    // DETRAZIONE CUNEO: sempre mostrata
     {
       icon: trattenute.flags.hasDetrazioneCuneo ? "🎯" : "⛔",
       label: "Ulteriore Detrazione Cuneo",
@@ -108,7 +96,6 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
       amount: trattenute.trattenute.addizionaleComunale,
       percentage: (trattenute.trattenute.addizionaleComunale / trattenute.input.ral) * 100,
     },
-    // BONUS CUNEO: sempre mostrato
     {
       icon: trattenute.flags.hasBonusCuneo ? "💰" : "⛔",
       label: "Bonus Cuneo Fiscale",
@@ -124,7 +111,6 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
         normativa: BONUS_TOOLTIP_TEXTS.bonusCuneo.normativa,
       },
     },
-    // TRATTAMENTO INTEGRATIVO: sempre mostrato
     {
       icon: trattenute.flags.hasTrattamentoIntegrativo ? "🎁" : "⛔",
       label: "Trattamento Integrativo",
@@ -144,7 +130,6 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
 
   const maxAmount = Math.max(...items.map((item) => Math.abs(item.amount)));
 
-  // Calcola riepilogo benefici 2025
   const benefici2025 = [
     {
       label: "Detrazione Cuneo Fiscale",
@@ -166,219 +151,190 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
     },
   ];
 
-  const totaleBeneficiAttivi = benefici2025
-    .filter((b) => b.isActive)
-    .reduce((sum, b) => sum + b.amount, 0);
+  const totaleBeneficiAttivi = benefici2025.filter((b) => b.isActive).reduce((sum, b) => sum + b.amount, 0);
 
   return (
     <TooltipProvider>
-      <div className="space-y-6">
-        {/* Riepilogo Benefici 2025 */}
-        <Card className="p-6 bg-gradient-to-br from-success/5 to-success/10 border-success/20 shadow-medium">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl">🎯</span>
-            <h3 className="text-xl font-bold">I tuoi benefici fiscali 2025</h3>
+      <div className="space-y-4">
+        {/* Benefici 2025 */}
+        <div className="bg-card rounded-2xl border border-border/60 shadow-soft overflow-hidden">
+          <div className="px-6 py-5 border-b border-border/50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg teal-gradient flex items-center justify-center">
+                  <span className="text-sm">🎯</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-foreground">Benefici fiscali 2025</h3>
+                  <p className="text-xs text-muted-foreground">Le misure di sostegno al reddito</p>
+                </div>
+              </div>
+              {totaleBeneficiAttivi > 0 && (
+                <div className="text-right">
+                  <div className="text-xs text-muted-foreground mb-0.5">Totale attivo</div>
+                  <div className="font-bold text-success">+{formatEuro(totaleBeneficiAttivi)}</div>
+                </div>
+              )}
+            </div>
           </div>
-          
-          <div className="space-y-3">
+
+          <div className="p-4 space-y-2">
             {benefici2025.map((beneficio, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+                className={cn(
+                  "flex items-center justify-between p-3.5 rounded-xl border transition-all",
                   beneficio.isActive
-                    ? "bg-success/10 border border-success/30"
-                    : "bg-muted/30 border border-border/50"
-                }`}
+                    ? "bg-success/6 border-success/20 dark:bg-success/10"
+                    : "bg-muted/30 border-border/40"
+                )}
               >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="text-xl">
-                    {beneficio.isActive ? "✅" : "⛔"}
-                  </span>
-                  <div className="flex-1">
-                    <div
-                      className={`font-semibold text-sm ${
-                        beneficio.isActive ? "text-foreground" : "text-muted-foreground"
-                      }`}
-                    >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  {beneficio.isActive
+                    ? <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
+                    : <XCircle className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  }
+                  <div className="min-w-0">
+                    <div className={cn("font-semibold text-sm truncate", beneficio.isActive ? "text-foreground" : "text-muted-foreground")}>
                       {beneficio.label}
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {beneficio.reason}
-                    </div>
+                    <div className="text-xs text-muted-foreground truncate">{beneficio.reason}</div>
                   </div>
                 </div>
-                <div
-                  className={`font-bold text-sm ${
-                    beneficio.isActive ? "text-success" : "text-muted-foreground"
-                  }`}
-                >
+                <div className={cn("font-bold text-sm ml-3 flex-shrink-0", beneficio.isActive ? "text-success" : "text-muted-foreground")}>
                   {beneficio.isActive ? `+${formatEuro(beneficio.amount)}` : "—"}
                 </div>
               </div>
             ))}
           </div>
+        </div>
 
-          {totaleBeneficiAttivi > 0 && (
-            <div className="mt-4 pt-4 border-t border-success/30">
-              <div className="flex items-center justify-between">
-                <div className="font-bold">Totale benefici attivi</div>
-                <div className="font-bold text-lg text-success">
-                  +{formatEuro(totaleBeneficiAttivi)}
-                </div>
+        {/* Breakdown dettagliato */}
+        <div className="bg-card rounded-2xl border border-border/60 shadow-soft overflow-hidden">
+          <div className="px-6 py-5 border-b border-border/50">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                <span className="text-sm">📊</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground">Dettaglio trattenute</h3>
+                <p className="text-xs text-muted-foreground">Come viene calcolato il tuo netto</p>
               </div>
             </div>
-          )}
-        </Card>
+          </div>
 
-        {/* Breakdown Dettagliato */}
-        <Card className="p-6 bg-card shadow-medium">
-          <h3 className="text-xl font-bold mb-6">Dettaglio trattenute 📊</h3>
-
-          <div className="space-y-4">
+          <div className="p-5 space-y-5">
             {items.map((item, index) => (
               <div
                 key={index}
-                className={`space-y-2 animate-slide-in ${
-                  item.isActive === false ? "opacity-60" : ""
-                }`}
-                style={{
-                  animationDelay: `${index * 50}ms`,
-                }}
+                className={cn("animate-slide-in", item.isActive === false && "opacity-50")}
+                style={{ animationDelay: `${index * 40}ms` }}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                <div className="flex items-center justify-between gap-4 mb-2">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="text-xl flex-shrink-0 leading-none">{item.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`font-semibold text-sm ${
-                            item.isActive === false ? "text-muted-foreground" : ""
-                          }`}
-                        >
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={cn("font-semibold text-sm", item.isActive === false && "text-muted-foreground")}>
                           {item.label}
-                        </div>
+                        </span>
                         {item.tooltip && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <button className="inline-flex items-center">
-                                <Info className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                              <button className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
+                                <Info className="h-3 w-3" />
                               </button>
                             </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
+                            <TooltipContent className="max-w-xs">
                               <div className="space-y-2">
                                 <div className="font-bold text-sm">{item.tooltip.title}</div>
-                                <div className="text-xs leading-relaxed">
-                                  {item.tooltip.description}
-                                </div>
+                                <div className="text-xs leading-relaxed">{item.tooltip.description}</div>
                                 {item.tooltip.details && (
-                                  <div className="text-xs leading-relaxed whitespace-pre-line border-t border-border pt-2">
-                                    {item.tooltip.details}
-                                  </div>
+                                  <div className="text-xs leading-relaxed whitespace-pre-line border-t border-border pt-2">{item.tooltip.details}</div>
                                 )}
                                 {item.tooltip.normativa && (
-                                  <div className="text-xs text-muted-foreground italic pt-1">
-                                    {item.tooltip.normativa}
-                                  </div>
+                                  <div className="text-xs text-muted-foreground italic">{item.tooltip.normativa}</div>
                                 )}
                               </div>
                             </TooltipContent>
                           </Tooltip>
                         )}
                       </div>
-                      <div
-                        className={`text-xs ${
-                          item.isActive === false
-                            ? "text-muted-foreground"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {item.description}
-                      </div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <div
-                      className={`font-bold text-sm ${
-                        item.isActive === false
-                          ? "text-muted-foreground"
-                          : item.isPositive
-                          ? "text-success"
+
+                  <div className="text-right flex-shrink-0 flex items-center gap-1.5">
+                    {item.isPositive
+                      ? <TrendingUp className="w-3.5 h-3.5 text-success" />
+                      : <TrendingDown className="w-3.5 h-3.5 text-destructive" />
+                    }
+                    <div>
+                      <div className={cn(
+                        "font-bold text-sm",
+                        item.isActive === false ? "text-muted-foreground"
+                          : item.isPositive ? "text-success"
                           : "text-destructive"
-                      }`}
-                    >
-                      {item.amount === 0 && item.isActive === false
-                        ? "—"
-                        : `${item.isPositive ? "+" : "−"}${formatEuro(Math.abs(item.amount))}`}
-                    </div>
-                    {item.amount > 0 && (
-                      <div className="text-xs text-muted-foreground">
-                        {item.percentage.toFixed(1)}%
+                      )}>
+                        {item.amount === 0 && item.isActive === false
+                          ? "—"
+                          : `${item.isPositive ? "+" : "−"}${formatEuro(Math.abs(item.amount))}`}
                       </div>
-                    )}
+                      {item.amount > 0 && (
+                        <div className="text-xs text-muted-foreground">{item.percentage.toFixed(1)}%</div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 {/* Progress bar */}
-                {(item.isActive !== false && item.amount > 0) && (
-                  <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                {item.isActive !== false && item.amount > 0 && (
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        item.isPositive ? "bg-success" : "bg-destructive"
-                      }`}
-                      style={{
-                        width: `${(Math.abs(item.amount) / maxAmount) * 100}%`,
-                      }}
+                      className={cn(
+                        "h-full rounded-full transition-all duration-700 ease-out",
+                        item.isPositive ? "bg-success" : "bg-destructive/70"
+                      )}
+                      style={{ width: `${(Math.abs(item.amount) / maxAmount) * 100}%` }}
                     />
                   </div>
                 )}
               </div>
             ))}
 
-            {/* Totals */}
-            <div className="pt-4 border-t-2 border-border space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">💸</span>
-              <div className="font-bold">Totale Trattenute</div>
-            </div>
-            <div className="text-right">
-              <div className="font-bold text-lg text-destructive">
-                −{formatEuro(trattenute.trattenute.totale)}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {(trattenute.percentuali.aliquotaEffettiva * 100).toFixed(1)}% della RAL
-              </div>
-            </div>
-          </div>
-
-          {trattenute.bonus.totale > 0 && (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🎁</span>
-                <div className="font-bold">Totale Bonus</div>
-              </div>
-              <div className="text-right">
-                <div className="font-bold text-lg text-success">
-                  +{formatEuro(trattenute.bonus.totale)}
+            {/* Summary */}
+            <div className="pt-5 mt-5 border-t border-border/50 space-y-3">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-destructive/6 border border-destructive/20">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-lg">💸</span>
+                  <div className="font-semibold text-sm">Totale trattenute</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-destructive">−{formatEuro(trattenute.trattenute.totale)}</div>
+                  <div className="text-xs text-muted-foreground">{(trattenute.percentuali.aliquotaEffettiva * 100).toFixed(1)}% RAL</div>
                 </div>
               </div>
-            </div>
-          )}
 
-          <div className="flex items-center justify-between pt-2 border-t border-border/50">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">💰</span>
-              <div className="font-bold text-lg">Netto Annuale</div>
-            </div>
-            <div className="text-right">
-              <div className="font-bold text-xl text-primary">
-                {formatEuro(trattenute.netto.annuale)}
+              {trattenute.bonus.totale > 0 && (
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-success/6 border border-success/20">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-lg">🎁</span>
+                    <div className="font-semibold text-sm">Totale bonus</div>
+                  </div>
+                  <div className="font-bold text-success">+{formatEuro(trattenute.bonus.totale)}</div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between p-4 rounded-xl bg-primary/8 border border-primary/25 dark:bg-primary/12">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-lg">💰</span>
+                  <div className="font-bold">Netto annuale</div>
+                </div>
+                <div className="font-black text-xl text-primary">{formatEuro(trattenute.netto.annuale)}</div>
               </div>
             </div>
           </div>
-            </div>
-          </div>
-        </Card>
+        </div>
       </div>
     </TooltipProvider>
   );

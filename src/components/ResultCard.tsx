@@ -1,9 +1,9 @@
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatEuro } from "@/utils/formatters";
 import { getAliquotaMessage, getEasterEgg } from "@/utils/messages";
 import { calcolaMensilitaMultiple } from "@/utils/calculations";
 import { useEffect, useState } from "react";
+import { TrendingDown, CalendarDays, Percent } from "lucide-react";
 
 interface ResultCardProps {
   nettoAnnuale: number;
@@ -12,16 +12,13 @@ interface ResultCardProps {
   ral: number;
 }
 
-export function ResultCard({
-  nettoAnnuale,
-  nettoMensile,
-  aliquotaEffettiva,
-  ral,
-}: ResultCardProps) {
+export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral }: ResultCardProps) {
   const [show, setShow] = useState(false);
   const easterEgg = getEasterEgg(ral);
   const message = getAliquotaMessage(aliquotaEffettiva);
   const mensilita = calcolaMensilitaMultiple(nettoAnnuale);
+  const trattenute = ral - nettoAnnuale;
+  const perditaPerc = ((trattenute / ral) * 100).toFixed(1);
 
   useEffect(() => {
     setShow(false);
@@ -30,85 +27,104 @@ export function ResultCard({
   }, [nettoAnnuale]);
 
   return (
-    <Card className="p-8 bg-gradient-success shadow-success border-0 text-white relative overflow-hidden">
-      <div className="relative z-10">
+    <div className="hero-gradient rounded-2xl overflow-hidden shadow-large relative">
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-primary blur-[80px]" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-primary/60 blur-[80px]" />
+      </div>
+
+      <div className="relative z-10 p-7 md:p-8">
         {easterEgg && (
-          <Badge variant="secondary" className="mb-4 bg-white/20 text-white border-white/30">
-            {easterEgg}
-          </Badge>
+          <div className="mb-5">
+            <Badge className="bg-white/15 text-white border-white/25 hover:bg-white/20 text-xs font-medium">
+              {easterEgg}
+            </Badge>
+          </div>
         )}
 
-        <div className="space-y-6">
-          <div
-            className={`transition-all duration-500 ${show ? "opacity-100" : "opacity-0"}`}
-          >
-            <div className="text-sm font-medium mb-2 text-white/80">
-              Quello che vedrai sul conto 💰
-            </div>
-            <div className="text-5xl font-bold mb-1 animate-counter">
+        {/* Main result */}
+        <div className={`transition-all duration-600 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+          <p className="text-white/60 text-sm font-medium mb-1 uppercase tracking-wider">Netto annuale</p>
+          <div className="flex items-end gap-4 mb-1">
+            <span className="text-6xl md:text-7xl font-black text-white leading-none animate-counter" data-testid="text-netto-annuale">
               {formatEuro(nettoAnnuale)}
+            </span>
+          </div>
+          <p className="text-white/40 text-sm">sul tuo conto bancario ogni anno</p>
+        </div>
+
+        {/* Stats row */}
+        <div className={`mt-8 grid grid-cols-3 gap-3 transition-all duration-600 delay-100 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+          <div className="bg-white/8 border border-white/15 rounded-xl p-3.5 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 mb-2">
+              <TrendingDown className="w-3.5 h-3.5 text-white/50" />
+              <span className="text-white/50 text-xs font-medium uppercase tracking-wide">Trattenute</span>
             </div>
-            <div className="text-sm text-white/80">all'anno</div>
+            <div className="text-white font-bold text-lg" data-testid="text-trattenute">
+              {formatEuro(trattenute)}
+            </div>
+            <div className="text-white/40 text-xs mt-0.5">{perditaPerc}% della RAL</div>
           </div>
 
-          <div
-            className={`transition-all duration-500 delay-100 ${
-              show ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div className="text-sm font-medium mb-3 text-white/80">
-              Al mese (dipende dal contratto) 📅
+          <div className="bg-white/8 border border-white/15 rounded-xl p-3.5 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 mb-2">
+              <Percent className="w-3.5 h-3.5 text-white/50" />
+              <span className="text-white/50 text-xs font-medium uppercase tracking-wide">Aliquota</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all">
-                <div className="text-xs text-white/70 mb-1">12 mensilità</div>
-                <div className="text-xl font-bold">{formatEuro(mensilita.netto12)}</div>
-                <div className="text-xs text-white/70">/mese</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/30 hover:bg-white/15 transition-all relative">
-                <Badge
-                  variant="secondary"
-                  className="absolute -top-2 -right-2 bg-white/30 text-white border-white/40 text-xs"
-                >
-                  Più comune
-                </Badge>
-                <div className="text-xs text-white/70 mb-1">13 mensilità</div>
-                <div className="text-xl font-bold">{formatEuro(mensilita.netto13)}</div>
-                <div className="text-xs text-white/70">/mese</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all">
-                <div className="text-xs text-white/70 mb-1">14 mensilità</div>
-                <div className="text-xl font-bold">{formatEuro(mensilita.netto14)}</div>
-                <div className="text-xs text-white/70">/mese</div>
-              </div>
+            <div className="text-white font-bold text-lg" data-testid="text-aliquota">
+              {(aliquotaEffettiva * 100).toFixed(1)}%
             </div>
+            <div className="text-white/40 text-xs mt-0.5 truncate">{message}</div>
           </div>
 
-          <div
-            className={`pt-4 border-t border-white/20 transition-all duration-500 delay-200 ${
-              show ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-medium text-white/80 mb-1">
-                  Aliquota effettiva 📊
-                </div>
-                <div className="text-2xl font-bold">
-                  {(aliquotaEffettiva * 100).toFixed(1)}%
-                </div>
-              </div>
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                {message}
-              </Badge>
+          <div className="bg-white/8 border border-white/15 rounded-xl p-3.5 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 mb-2">
+              <CalendarDays className="w-3.5 h-3.5 text-white/50" />
+              <span className="text-white/50 text-xs font-medium uppercase tracking-wide">Al giorno</span>
             </div>
+            <div className="text-white font-bold text-lg">
+              {formatEuro(Math.round(nettoAnnuale / 365))}
+            </div>
+            <div className="text-white/40 text-xs mt-0.5">ogni giorno</div>
+          </div>
+        </div>
+
+        {/* Monthly breakdown */}
+        <div className={`mt-5 transition-all duration-600 delay-200 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+          <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-3">
+            Al mese — in base alle mensilità
+          </p>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: "12 mensilità", value: mensilita.netto12, popular: false },
+              { label: "13 mensilità", value: mensilita.netto13, popular: true },
+              { label: "14 mensilità", value: mensilita.netto14, popular: false },
+            ].map(({ label, value, popular }) => (
+              <div
+                key={label}
+                className={`relative rounded-xl p-3.5 border transition-all ${
+                  popular
+                    ? "bg-white/15 border-white/30 ring-1 ring-white/20"
+                    : "bg-white/8 border-white/15"
+                }`}
+              >
+                {popular && (
+                  <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      Comune
+                    </span>
+                  </div>
+                )}
+                <div className="text-white/50 text-xs mb-1.5 mt-0.5">{label}</div>
+                <div className="text-white font-bold text-lg" data-testid={`text-mensile-${label.replace(/\s/g, "-")}`}>
+                  {formatEuro(value)}
+                </div>
+                <div className="text-white/40 text-xs">/mese</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Decorative background circles */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-    </Card>
+    </div>
   );
 }
