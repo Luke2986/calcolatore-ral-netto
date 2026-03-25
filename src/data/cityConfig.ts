@@ -1,4 +1,4 @@
-// Configurazione città con addizionali regionali e comunali 2025
+// Configurazione città con addizionali regionali e comunali 2026
 
 import type { CityData, CityCode } from "@/types/calculator";
 

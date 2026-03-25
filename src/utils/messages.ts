@@ -47,7 +47,7 @@ export const BREAKDOWN_LABELS = {
   detrazioneCuneo: {
     label: "Detrazione cuneo fiscale",
     icon: "🎁",
-    description: "Novità 2025: sconto per redditi €20k-€40k",
+    description: "Novità 2026: sconto per redditi €20k-€40k",
   },
   addRegionale: {
     label: "Addizionale Regionale",
@@ -62,12 +62,12 @@ export const BREAKDOWN_LABELS = {
   bonusCuneo: {
     label: "Bonus cuneo fiscale",
     icon: "💰",
-    description: "Novità 2025: bonus netto per redditi ≤€20k",
+    description: "Novità 2026: bonus netto per redditi ≤€20k",
   },
   trattamentoIntegrativo: {
     label: "Trattamento integrativo",
     icon: "🎯",
-    description: "Ex Bonus Renzi per redditi ≤€28k",
+    description: "Ex Bonus Renzi per redditi ≤€15k",
   },
 } as const;
 
@@ -85,9 +85,9 @@ export const BONUS_NOT_APPLICABLE_REASONS = {
     eligible: "Attivo per redditi €20.001 - €40.000",
   },
   trattamentoIntegrativo: {
-    overThreshold: "Non spetta: il tuo reddito supera €28.000",
+    overThreshold: "Non spetta: il tuo reddito supera €15.000",
     incapiente: "Non spetta: IRPEF insufficiente (incapienza fiscale)",
-    eligible: "Attivo per redditi ≤ €28.000 (se capiente)",
+    eligible: "Attivo per redditi ≤ €15.000 (se capiente)",
   },
 } as const;
 
@@ -96,21 +96,21 @@ export const BONUS_NOT_APPLICABLE_REASONS = {
  */
 export const BONUS_TOOLTIP_TEXTS = {
   bonusCuneo: {
-    title: "Bonus Cuneo Fiscale 2025",
+    title: "Bonus Cuneo Fiscale 2026",
     description: "Somma integrativa netta (non tassata) che aumenta direttamente lo stipendio netto. Si applica a redditi da lavoro dipendente fino a €20.000.",
     percentuali: "• Fino a €8.500: 7,1% del reddito\n• Da €8.501 a €15.000: 5,3%\n• Da €15.001 a €20.000: 4,8%",
-    normativa: "Riferimento: Art. 1, comma 5, D.L. 2/2024 convertito in L. 21/2024",
+    normativa: "Riferimento: Art. 1, commi 4-5, L. 207/2024, confermato per il 2026",
   },
   detrazioneCuneo: {
-    title: "Ulteriore Detrazione Cuneo Fiscale 2025",
-    description: "Detrazione IRPEF che riduce l'imposta dovuta. Introdotta dalla Legge di Bilancio 2025 per la fascia di reddito €20.000-€40.000.",
+    title: "Ulteriore Detrazione Cuneo Fiscale 2026",
+    description: "Detrazione IRPEF che riduce l'imposta dovuta. Si applica per redditi da lavoro dipendente tra €20.000 e €40.000.",
     importo: "• Da €20.001 a €32.000: €1.000 fisso\n• Da €32.001 a €40.000: décalage lineare",
-    normativa: "Riferimento: Art. 1, L. 207/2024 (Legge di Bilancio 2025)",
+    normativa: "Riferimento: Art. 1, commi 6-7, L. 207/2024, confermato per il 2026",
   },
   trattamentoIntegrativo: {
-    title: "Trattamento Integrativo 2025 (Ex Bonus Renzi)",
-    description: "Credito d'imposta erogato direttamente in busta paga per lavoratori dipendenti con reddito fino a €28.000 e sufficiente capienza IRPEF.",
+    title: "Trattamento Integrativo 2026 (Ex Bonus Renzi)",
+    description: "Credito d'imposta erogato direttamente in busta paga per lavoratori dipendenti con reddito fino a €15.000 e sufficiente capienza IRPEF.",
     importo: "Fino a €1.200 annui (€100 al mese) se il lavoratore ha sufficiente IRPEF da cui sottrarre le detrazioni.",
-    normativa: "Riferimento: Art. 13, comma 1-bis e 2-bis, TUIR (D.P.R. 917/1986)",
+    normativa: "Riferimento: Art. 1, DL 3/2020, modificato da L. 207/2024, confermato per il 2026",
   },
 };
