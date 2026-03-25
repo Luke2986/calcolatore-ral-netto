@@ -43,11 +43,11 @@ const Index = () => {
             <div className="max-w-3xl mx-auto text-center space-y-5">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-primary-foreground/80 text-xs font-medium tracking-wider uppercase backdrop-blur-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Aggiornato al 2025
+                Aggiornato al 2026
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight">
                 RAL → Netto
-                <span className="block text-primary mt-1">2025</span>
+                <span className="block text-primary mt-1">2026</span>
               </h1>
               <p className="text-lg md:text-xl text-white/60 max-w-xl mx-auto leading-relaxed font-light">
                 Il calcolatore che ti dice la verità —{" "}
@@ -105,7 +105,7 @@ const Index = () => {
                 <div className="text-xs text-muted-foreground space-y-1.5 leading-relaxed">
                   <p>
                     <span className="font-medium text-foreground/80">Include:</span>{" "}
-                    IRPEF 2025 (scaglioni 23%, 35%, 43%), contributi INPS, detrazioni lavoro dipendente,
+                    IRPEF 2026 (scaglioni 23%, 35%, 43%), contributi INPS, detrazioni lavoro dipendente,
                     bonus cuneo fiscale, ulteriore detrazione cuneo, trattamento integrativo, addizionali regionali e comunali.
                   </p>
                   <p>

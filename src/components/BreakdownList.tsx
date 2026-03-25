@@ -165,7 +165,7 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
                   <span className="text-sm">🎯</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-foreground">Benefici fiscali 2025</h3>
+                  <h3 className="font-bold text-foreground">Benefici fiscali 2026</h3>
                   <p className="text-xs text-muted-foreground">Le misure di sostegno al reddito</p>
                 </div>
               </div>
