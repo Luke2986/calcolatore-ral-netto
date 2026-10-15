@@ -15,12 +15,11 @@ export const REGIONI: Record<RegioneCode, RegioneData> = {
     name: "Lazio",
     scaglioni: [
       { limite: 15000, aliquota: 0.0173 },
-      { limite: 28000, aliquota: 0.0273 },
-      { limite: 50000, aliquota: 0.0293 },
       { limite: Infinity, aliquota: 0.0333 },
     ],
-    maggiorazione: { soglia: 28000, importo: 30 },
-    detrazione: { soglia: 35000, importo: 60 },
+    // L.R. Lazio 31/12/2025 n. 20, art. 2 commi 2-3
+    aliquotaAgevolata: { soglia: 28000, aliquota: 0.0173 },
+    detrazione: { min: 28000, max: 30000, importo: 60 },
   },
 
   campania: {
@@ -99,9 +98,10 @@ export const REGIONI: Record<RegioneCode, RegioneData> = {
   "friuli-venezia-giulia": {
     name: "Friuli Venezia Giulia",
     scaglioni: [
-      { limite: 15000, aliquota: 0.007 },
       { limite: Infinity, aliquota: 0.0123 },
     ],
+    // L.R. FVG 25/7/2012 n. 14, art. 1 c. 5: oltre 15.000 € l'1,23% vale sull'intero imponibile
+    aliquotaAgevolata: { soglia: 15000, aliquota: 0.007 },
   },
 
   sardegna: {

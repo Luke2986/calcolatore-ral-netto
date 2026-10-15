@@ -18,12 +18,15 @@ export interface Scaglione {
 export interface RegioneData {
   name: string;
   scaglioni: Scaglione[];
-  maggiorazione?: {
+  // Fino a `soglia` si applica `aliquota` sull'intero imponibile al posto degli scaglioni
+  aliquotaAgevolata?: {
     soglia: number;
-    importo: number;
+    aliquota: number;
   };
+  // Detrazione fissa per imponibile > min e ≤ max
   detrazione?: {
-    soglia: number;
+    min: number;
+    max: number;
     importo: number;
   };
 }

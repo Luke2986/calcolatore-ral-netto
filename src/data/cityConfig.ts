@@ -41,7 +41,7 @@ export const CITIES: Record<CityCode, CityData> = {
     name: "Bologna",
     emoji: "🍝",
     regione: "emilia-romagna",
-    addizionaleComunale: { scaglioni: flat(0.008), sogliaEsenzione: 12000 },
+    addizionaleComunale: { scaglioni: flat(0.008), sogliaEsenzione: 15000 },
   },
   firenze: {
     name: "Firenze",
@@ -66,7 +66,7 @@ export const CITIES: Record<CityCode, CityData> = {
     name: "Palermo",
     emoji: "🌴",
     regione: "sicilia",
-    addizionaleComunale: { scaglioni: flat(0.0101), sogliaEsenzione: 0 },
+    addizionaleComunale: { scaglioni: flat(0.0103), sogliaEsenzione: 0 },
   },
   bari: {
     name: "Bari",

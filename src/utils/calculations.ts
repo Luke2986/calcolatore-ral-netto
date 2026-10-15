@@ -66,13 +66,14 @@ export function calcDetrazioniLavoro(reddito: number): number {
  */
 export function calcAddizionaleRegionale(imponibile: number, citta: CityCode): number {
   const regione = REGIONI[CITIES[citta].regione];
-  let addizionale = applicaScaglioni(imponibile, regione.scaglioni);
+  const { aliquotaAgevolata, detrazione } = regione;
+  let addizionale =
+    aliquotaAgevolata && imponibile <= aliquotaAgevolata.soglia
+      ? imponibile * aliquotaAgevolata.aliquota
+      : applicaScaglioni(imponibile, regione.scaglioni);
 
-  if (regione.maggiorazione && imponibile > regione.maggiorazione.soglia) {
-    addizionale += regione.maggiorazione.importo;
-  }
-  if (regione.detrazione && imponibile <= regione.detrazione.soglia) {
-    addizionale = Math.max(0, addizionale - regione.detrazione.importo);
+  if (detrazione && imponibile > detrazione.min && imponibile <= detrazione.max) {
+    addizionale = Math.max(0, addizionale - detrazione.importo);
   }
   return addizionale;
 }
