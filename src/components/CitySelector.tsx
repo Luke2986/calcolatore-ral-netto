@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { CITIES, CITY_CODES } from "@/data/cityConfig";
 import { REGIONI } from "@/data/regionConfig";
 import { cn } from "@/lib/utils";
-import { ChevronLeft } from "lucide-react";
-import type { CityCode, RegioneCode } from "@/types/calculator";
+import { Search, X } from "lucide-react";
+import type { CityCode } from "@/types/calculator";
 
 interface CitySelectorProps {
   value: CityCode;
@@ -11,125 +11,100 @@ interface CitySelectorProps {
   className?: string;
 }
 
+const normalize = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+const SORTED_CITIES = [...CITY_CODES].sort((a, b) => CITIES[a].name.localeCompare(CITIES[b].name));
+
 export function CitySelector({ value, onChange, className }: CitySelectorProps) {
-  const selectedRegione = CITIES[value].regione;
-  const [activeRegione, setActiveRegione] = useState<RegioneCode>(selectedRegione);
+  const [query, setQuery] = useState("");
 
-  const regioniWithCities = useMemo(() => {
-    const map = new Map<RegioneCode, CityCode[]>();
-    for (const code of CITY_CODES) {
-      const regione = CITIES[code].regione;
-      if (!map.has(regione)) map.set(regione, []);
-      map.get(regione)!.push(code);
-    }
-    return map;
-  }, []);
+  const cities = useMemo(() => {
+    const q = normalize(query.trim());
+    if (!q) return SORTED_CITIES;
+    return SORTED_CITIES.filter(
+      (c) =>
+        normalize(CITIES[c].name).includes(q) || normalize(REGIONI[CITIES[c].regione].name).includes(q)
+    );
+  }, [query]);
 
-  const regioni = useMemo(
-    () => Array.from(regioniWithCities.keys()).sort((a, b) => REGIONI[a].name.localeCompare(REGIONI[b].name)),
-    [regioniWithCities]
-  );
-  const [showCities, setShowCities] = useState(
-    () => (regioniWithCities.get(selectedRegione)?.length ?? 0) > 1
-  );
-
-  const handleRegioneClick = (regione: RegioneCode) => {
-    setActiveRegione(regione);
-    const cities = regioniWithCities.get(regione)!;
-    if (cities.length === 1) {
-      onChange(cities[0]);
-    } else {
-      setShowCities(true);
-    }
-  };
-
-  const handleBack = () => {
-    setShowCities(false);
-  };
-
-  const activeCities = regioniWithCities.get(activeRegione) || [];
+  const selected = CITIES[value];
 
   return (
     <div className={className}>
-      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-        {showCities ? "Città" : "Regione"} 🗺️
-      </p>
+      <div className="flex items-baseline justify-between mb-3">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Città 🗺️
+        </p>
+        <p className="text-xs text-muted-foreground">
+          <span className="font-semibold text-primary">{selected.name}</span> · {REGIONI[selected.regione].name}
+        </p>
+      </div>
 
-      {showCities ? (
-        <div className="space-y-2.5">
+      <div className="relative mb-3">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Cerca città o regione"
+          aria-label="Cerca città o regione"
+          className="w-full h-10 pl-9 pr-9 rounded-xl border border-border/60 bg-background dark:bg-muted/30 text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all [&::-webkit-search-cancel-button]:hidden"
+          data-testid="input-city-search"
+        />
+        {query && (
           <button
-            onClick={handleBack}
-            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-1"
+            onClick={() => setQuery("")}
+            aria-label="Cancella ricerca"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            <span>
-              Tutte le regioni · <span className="font-semibold text-foreground">{REGIONI[activeRegione].name}</span>
-            </span>
+            <X className="w-4 h-4" />
           </button>
+        )}
+      </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            {activeCities.map((cityCode) => {
-              const city = CITIES[cityCode];
-              const isSelected = value === cityCode;
+      <div className="max-h-[15.5rem] overflow-y-auto -mx-1 px-1 py-0.5 overscroll-contain">
+        {cities.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-6">Nessuna città trovata</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-1.5">
+            {cities.map((code) => {
+              const city = CITIES[code];
+              const isSelected = value === code;
               return (
                 <button
-                  key={cityCode}
-                  onClick={() => onChange(cityCode)}
-                  data-testid={`button-city-${cityCode}`}
+                  key={code}
+                  onClick={() => onChange(code)}
+                  aria-pressed={isSelected}
+                  data-testid={`button-city-${code}`}
                   className={cn(
-                    "relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 text-left group",
-                    "hover:shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+                    "flex items-center gap-2 px-2.5 py-2 rounded-lg border text-left transition-all group",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
                     isSelected
-                      ? "border-primary bg-primary/8 dark:bg-primary/12 shadow-primary"
+                      ? "border-primary bg-primary/10"
                       : "border-border/60 bg-background dark:bg-muted/20 hover:border-primary/40 hover:bg-primary/5"
                   )}
                 >
-                  {isSelected && (
-                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary" />
-                  )}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{city.emoji}</span>
-                    <span className={cn(
-                      "font-semibold text-sm leading-tight transition-colors",
-                      isSelected ? "text-primary" : "text-foreground group-hover:text-primary"
-                    )}>
+                  <span className="text-lg leading-none flex-shrink-0">{city.emoji}</span>
+                  <span className="min-w-0">
+                    <span
+                      className={cn(
+                        "block text-sm leading-tight truncate",
+                        isSelected ? "text-primary font-semibold" : "text-foreground font-medium group-hover:text-primary"
+                      )}
+                    >
                       {city.name}
                     </span>
-                  </div>
+                    <span className="block text-[11px] text-muted-foreground truncate">
+                      {REGIONI[city.regione].name}
+                    </span>
+                  </span>
                 </button>
               );
             })}
           </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2">
-          {regioni.map((regioneCode) => {
-            const regione = REGIONI[regioneCode];
-            const cities = regioniWithCities.get(regioneCode)!;
-            const isActive = regioneCode === selectedRegione;
-            return (
-              <button
-                key={regioneCode}
-                onClick={() => handleRegioneClick(regioneCode)}
-                className={cn(
-                  "p-2.5 rounded-xl border-2 cursor-pointer transition-all duration-200 text-left group",
-                  "hover:shadow-soft focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
-                  isActive
-                    ? "border-primary bg-primary/8 dark:bg-primary/12"
-                    : "border-border/60 bg-background dark:bg-muted/20 hover:border-primary/40 hover:bg-primary/5"
-                )}
-              >
-                <div className="font-semibold text-xs leading-tight text-foreground group-hover:text-primary">
-                  {regione.name}
-                </div>
-                <div className="text-[10px] text-muted-foreground mt-0.5">
-                  {cities.map(c => CITIES[c].name).join(", ")}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
