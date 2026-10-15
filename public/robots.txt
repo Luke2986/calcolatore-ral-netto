@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://calcolatore-ral-netto-inky.vercel.app/sitemap.xml
