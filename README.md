@@ -11,7 +11,7 @@ Calcolatore dello stipendio netto partendo dalla RAL (Reddito Annuo Lordo), aggi
 - Bonus cuneo fiscale, ulteriore detrazione cuneo, trattamento integrativo
 - Addizionali regionali progressive per regione
 - Addizionali comunali per città
-- Confronto tra 16 città italiane
+- Confronto tra tutti i 109 capoluoghi di provincia, con addizionali comunali e regionali 2026 dal portale MEF
 - Dark mode
 
 ## Tech Stack

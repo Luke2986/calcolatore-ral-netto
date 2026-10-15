@@ -1,14 +1,12 @@
-export type CityCode =
-  | "milano" | "bologna" | "roma" | "napoli"
-  | "torino" | "firenze" | "genova" | "palermo"
-  | "bari" | "catania" | "venezia" | "verona"
-  | "padova" | "trieste" | "cagliari" | "perugia";
+import type { CityCode } from "@/data/cityConfig";
+
+export type { CityCode };
 
 export type RegioneCode =
-  | "lombardia" | "emilia-romagna" | "lazio" | "campania"
-  | "piemonte" | "toscana" | "liguria" | "sicilia"
-  | "puglia" | "veneto" | "friuli-venezia-giulia" | "sardegna"
-  | "umbria";
+  | "piemonte" | "valle-d-aosta" | "lombardia" | "bolzano" | "trento"
+  | "veneto" | "friuli-venezia-giulia" | "liguria" | "emilia-romagna"
+  | "toscana" | "umbria" | "marche" | "lazio" | "abruzzo" | "molise"
+  | "campania" | "puglia" | "basilicata" | "calabria" | "sicilia" | "sardegna";
 
 export interface Scaglione {
   limite: number;
