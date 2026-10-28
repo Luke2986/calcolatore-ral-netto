@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { formatEuro } from "@/utils/formatters";
+import { formatEuro, formatPercentuale } from "@/utils/formatters";
 import { getAliquotaMessage, getEasterEgg } from "@/utils/messages";
 import { calcolaMensilitaMultiple } from "@/utils/calculations";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral 
   const message = getAliquotaMessage(aliquotaEffettiva);
   const mensilita = calcolaMensilitaMultiple(nettoAnnuale);
   const trattenute = ral - nettoAnnuale;
-  const perditaPerc = ((trattenute / ral) * 100).toFixed(1);
+  const perditaPerc = formatPercentuale((trattenute / ral) * 100);
 
   useEffect(() => {
     setShow(false);
@@ -63,7 +63,7 @@ export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral 
             <div className="text-white font-bold text-lg" data-testid="text-trattenute">
               {formatEuro(trattenute)}
             </div>
-            <div className="text-white/40 text-xs mt-0.5">{perditaPerc}% della RAL</div>
+            <div className="text-white/40 text-xs mt-0.5">{perditaPerc} della RAL</div>
           </div>
 
           <div className="bg-white/8 border border-white/15 rounded-xl p-3.5 backdrop-blur-sm">
@@ -72,7 +72,7 @@ export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral 
               <span className="text-white/50 text-xs font-medium uppercase tracking-wide">Aliquota</span>
             </div>
             <div className="text-white font-bold text-lg" data-testid="text-aliquota">
-              {(aliquotaEffettiva * 100).toFixed(1)}%
+              {formatPercentuale(aliquotaEffettiva * 100)}
             </div>
             <div className="text-white/40 text-xs mt-0.5 truncate">{message}</div>
           </div>
@@ -93,6 +93,10 @@ export function ResultCard({ nettoAnnuale, nettoMensile, aliquotaEffettiva, ral 
         <div className={`mt-5 transition-all duration-600 delay-200 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
           <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-3">
             Al mese — in base alle mensilità
+          </p>
+          <p className="text-white/40 text-xs -mt-2 mb-4">
+            Lo stesso netto annuo diviso in più rate: con 13 o 14 mensilità ogni stipendio è più basso,
+            ma a dicembre (e a giugno con la 14ª) ne arriva uno in più.
           </p>
           <div className="grid grid-cols-3 gap-3">
             {[

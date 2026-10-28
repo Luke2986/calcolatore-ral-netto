@@ -3,7 +3,7 @@ import { Info, TrendingDown, TrendingUp, CheckCircle2, XCircle } from "lucide-re
 import type { CalcoloResult } from "@/types/calculator";
 import { CITIES } from "@/data/cityConfig";
 import { REGIONI } from "@/data/regionConfig";
-import { formatEuro } from "@/utils/formatters";
+import { formatEuro, formatPercentuale } from "@/utils/formatters";
 import { BONUS_NOT_APPLICABLE_REASONS, BONUS_TOOLTIP_TEXTS } from "@/utils/messages";
 import { cn } from "@/lib/utils";
 
@@ -282,7 +282,7 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
                           : `${item.isPositive ? "+" : "−"}${formatEuro(Math.abs(item.amount))}`}
                       </div>
                       {item.amount > 0 && (
-                        <div className="text-xs text-muted-foreground">{item.percentage.toFixed(1)}%</div>
+                        <div className="text-xs text-muted-foreground">{formatPercentuale(item.percentage)}</div>
                       )}
                     </div>
                   </div>
@@ -312,7 +312,7 @@ export function BreakdownList({ trattenute, citta }: BreakdownListProps) {
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-destructive">−{formatEuro(trattenute.trattenute.totale)}</div>
-                  <div className="text-xs text-muted-foreground">{(trattenute.percentuali.aliquotaEffettiva * 100).toFixed(1)}% RAL</div>
+                  <div className="text-xs text-muted-foreground">{formatPercentuale(trattenute.percentuali.aliquotaEffettiva * 100)} RAL</div>
                 </div>
               </div>
 

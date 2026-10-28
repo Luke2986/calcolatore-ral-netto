@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { RAL_RANGE } from "@/data/constants";
+import { formatNumero, formatPercentuale } from "@/utils/formatters";
 
 interface RalInputProps {
   value: number;
@@ -15,8 +16,7 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
   const max = RAL_RANGE.max;
   const step = RAL_RANGE.step;
 
-  const formatInputValue = (val: number): string =>
-    new Intl.NumberFormat("it-IT").format(val);
+  const formatInputValue = (val: number): string => formatNumero(val);
 
   const [inputValue, setInputValue] = useState(formatInputValue(value));
   const [isFocused, setIsFocused] = useState(false);
@@ -83,7 +83,7 @@ export function RalInput({ value, onChange, className }: RalInputProps) {
           />
           <div className="flex justify-between text-xs text-muted-foreground font-medium">
             <span>€{formatInputValue(min)}</span>
-            <span className="text-primary font-semibold">{percentage.toFixed(0)}%</span>
+            <span className="text-primary font-semibold">{formatPercentuale(percentage, 0)}</span>
             <span>€{formatInputValue(max)}</span>
           </div>
         </div>
